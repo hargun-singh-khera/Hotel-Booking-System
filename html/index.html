@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <body>
+    <main class="d-flex flex-nowrap">
+        <div class="d-flex position-fixed flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:100%;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              
+              <span class="fs-4">Dashboard</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="#" class="nav-link active text-white" aria-current="page" style="background-color:#ff6537ff;">
+                  Home
+                </a>
+              </li>
+              <li>
+                  <div class="btn-group dropend mt-2 nav nav-pills flex-column mb-auto " >
+                      <button type="button" class="btn btn-primary dropdown-toggle text-start" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#ff6537ff;border:none;">
+                        Room Master 
+                      </button>
+                      <ul class="dropdown-menu">
+                          <li><button class="dropdown-item" type="button"><a href="second.html">Add Room</a></button></li>
+                          <li><button class="dropdown-item" type="button">Update Room</button></li>
+                          <li><button class="dropdown-item" type="button">Delete Room</button></li>
+                        </ul>
+                    </div>
+              </li>
+              <li>
+                  <div class="btn-group dropend mt-2 nav nav-pills flex-column mb-2 ">
+                      <button type="button" class="btn btn-primary dropdown-toggle text-start" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#ff6537ff;border:none;">
+                        Hotel Master 
+                      </button>
+                      <ul class="dropdown-menu">
+                          <li><button class="dropdown-item" type="button">Add Hotel</button></li>
+                          <li><button class="dropdown-item" type="button">Update Hotel</button></li>
+                          <li><button class="dropdown-item" type="button">Delete Hotel</button></li>
+                        </ul>
+                    </div>
+              </li>
+              <li class="nav-item">
+                  <a href="#" class="nav-link active text-white" aria-current="page" style="background-color:#ff6537ff;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                      </svg> Logout
+                  </a>
+              </li>
+            </ul>          
+        </div>
+      
+        <!-- <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary w-75">
+            <div class="alert alert-success" role="alert" >
+                <h4 class="alert-heading">Welcome Admin!</h4><hr>
+                <p class="mb-0">Your contributions are the backbone of our organization. Welcome!</p>
+            </div>
+        </div> -->
+        <div class="container" style="margin-top:5rem;" >
+          <div class="row d-flex align-items-center justify-content-center mb-5">
+                  <div class="col-md-9 ">
+                      <div class="card shadow p-5 border-0 rounded me-5">
+                          <h2 >Add Rooms</h2>
+                          <form action="/HotelBookingSystem/admin/room_master.php" method="POST">
+                              <div class="mb-3">
+                                  <label for="exampleInputPassword1" class="form-label">Room Type</label>
+                                  <input type="text" class="form-control" id="roomtype" name="roomtype" required>
+                                  <div class="text-center mt-4">
+                                      <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
+                                  </div>
+                              </div>
+                          </form>
+                          <?php
+                              $sql = "SELECT * FROM room_master ORDER BY RoomId ASC";
+                              $result = mysqli_query($conn, $sql);
+                              $num = mysqli_num_rows($result);
+                              if($num) {
+                                  echo '
+                                  <hr />
+                                  <h4>Recently Added Rooms</h4>
+                                  <table class="table">
+                                  <thead>
+                                  <tr>
+                                      <th scope="col">S.No.</th>
+                                      <th scope="col">Rooms</th>
+                                      <th scope="col"></th>
+                                      <th scope="col"></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  ';
+                                  while($row=mysqli_fetch_assoc($result)) {
+                                      echo '<tr>
+                                      <th scope="row">' .$row["RoomId"] . '</th>
+                                      <td>' .$row["Room_Type"] . '</td>
+                                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form1_submit">Update</button></td>
+                                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form1_submit">Delete</button></td>
+                                      </tr>';
+                                  }
+                                  echo '</tbody>
+                              </table>';
+                              }
+                          ?>
+                      </div>
+                  </div>
+              </div>
+      </div>
+        <!-- <div class="container"  style="margin-top: 5rem;">
+          <div class="row d-flex align-items-center justify-content-center mb-5">
+            <div class="col-md-8 ">
+              <div class="card shadow p-5 border-0 rounded me-5">
+                <h2 >Rooms Allotment to Hotels</h2>
+                <form action="/HotelBookingSystem/admin/index.php" method="POST">
+                  <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
+                      <select class="form-select mb-2" id="hotelname" name="hotelname" aria-label="Default select example">
+                        <option selected>Choose from Hotel Names</option>
+                        <option value="1">Taj Hotel</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                      <label for="exampleInputPassword1" class="form-label">Room Type</label>
+                      <select class="form-select mb-2" id="roomtype" name="roomtype" aria-label="Default select example">
+                        <option selected>Choose from Room Types</option>
+                        <option value="1">Single AC</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                      <label for="exampleInputPassword1" class="form-label ">No of Rooms Available</label>
+                      <input type="number" class="form-control mb-2" id="noofrrooms" name="noofrooms" aria-describedby="emailHelp">
+                      <label for="exampleInputPassword1" class="form-label ">No of Guests</label>
+                      <input type="number" class="form-control" id="noofrrooms" name="noofrooms" aria-describedby="emailHelp">
+                      <div class="text-center mt-4">
+                          <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
+                      </div>
+                  </div>
+                </form>
+                <hr />
+                <h4>Rooms Alloted to Hotels</h4>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">S.No.</th>
+                      <th scope="col">Room Type</th>
+                      <th scope="col">No of Rooms Available</th>
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Single AC</td>
+                      <td>100</td>
+                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form1_submit">Update</button></td>
+                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form1_submit">Delete</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+      </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>

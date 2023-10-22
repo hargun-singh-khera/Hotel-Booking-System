@@ -37,21 +37,21 @@
             else {
                 $showDefault = true;
             }
+            $cookie_name = "hotel";
+            echo "Cookie name: " . $cookie_name ."<br/>";
+            $cookie_value = $hotelname;
+            setcookie($cookie_name, $cookie_value, time()+84600, 'room_allot.php');
+            if(isset($_COOKIE[$cookie_name])) {
+                echo "Cookie '" . $cookie_name . "' is set!<br>";
+                echo "Value is: " . $_COOKIE[$cookie_name];
+            } else {
+                echo "Cookie named '" . $cookie_name . "' is not set!";
+            }
             $showAlert = true;
             echo "Hotel Name: " . $hotelname . ", Room Type: " . $roomtype . ", No of rooms: " .$noofrooms;
         }
     }
     // if($showAlert) {
-        $cookie_name = "hotel";
-        echo "Cookie name: " . $cookie_name ."<br/>";
-        $cookie_value = $hotelname;
-        setcookie($cookie_name, $cookie_value, time()+84600, '/');
-        if(isset($_COOKIE[$cookie_name])) {
-            echo "Cookie '" . $cookie_name . "' is set!<br>";
-            echo "Value is: " . $_COOKIE[$cookie_name];
-        } else {
-            echo "Cookie named '" . $cookie_name . "' is not set!";
-        }
     // }
 ?>
 <!doctype html>
@@ -92,7 +92,7 @@
                       <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                       <select class="form-select mb-2" id="hotelname" name="hotelname" aria-label="Default select example">
                           <?php
-                            if($showAlert) {
+                            if(isset($_COOKIE[$cookie_name])) {
                                 echo "Cookie value: " . $_COOKIE[$cookie_name] . "<br/>";
                                 echo '<option selected>' .$_COOKIE[$cookie_name]. '</option>';
                             }

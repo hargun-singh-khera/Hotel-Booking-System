@@ -1,6 +1,8 @@
 <?php
-    $showSuccess = true;
-    $showAlert = false;
+    $showSubmitSuccess = false;
+    $showDeleteSuccess = false;
+    $showSubmitAlert = false;
+    $showDeleteAlert = false;
     include '../partials/dbconnect.php';
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["form1_submit"])) {
@@ -8,9 +10,24 @@
             $sql = "INSERT INTO room_master(room_type) VALUES('$roomtype')";
             $result = mysqli_query($conn, $sql);
             if(!$result) {
-                $showSuccess = false;
+                $showSubmitSuccess = false;
             } 
-            $showAlert = true;
+            else {
+                $showSubmitSuccess = true;
+            }
+            $showSubmitAlert = true;
+        }
+        if(isset($_POST["form2_delete"])) {
+            $id = $_POST["id"];
+            $sql = "DELETE FROM room_master WHERE roomid='$id'";
+            $deleteResult  = mysqli_query($conn, $sql);
+            if(!$deleteResult) {
+                $showDeleteSuccess = false;
+            }
+            else {
+                $showDeleteSuccess = true;
+            }
+            $showDeleteAlert = true;
         }
     }
     
@@ -29,16 +46,30 @@
         <?php include 'nav.php';?>
             <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary ms-2" style="width:76em;">
                 <?php
-                    if($showSuccess && $showAlert) {
+                    if($showSubmitSuccess && $showSubmitAlert) {
                         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <strong>Success!</strong> New Room has been added to the database.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>';
                         // header('Refresh: 1; room_master.php');
                     }
-                    if($showAlert && !$showSuccess) {
+                    else if($showSubmitAlert && !$showSubmitSuccess) {
                         echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong>Error!</strong> Room Type already exists in the database.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+                        // header('Refresh: 1; room_master.php'); 
+                    }
+                    else if($showDeleteAlert && $showDeleteSuccess) {
+                        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Success!</strong> Record has been deleted successfully.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+                        // header('Refresh: 1; room_master.php'); 
+                    }
+                    else if($showDeleteAlert && !$showDeleteSuccess) {
+                        echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> Record was not deleted.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>';
                         // header('Refresh: 1; room_master.php'); 
@@ -80,21 +111,9 @@
                                     echo '<tr>
                                     <th scope="row">' .$roomId . '</th>
                                     <td>' .$row["Room_Type"] . '</td>';
-                                    if($_SERVER["REQUEST_METHOD"] == "POST") {
-                                        if(isset($_POST[$roomId])) {
-                                            $sql = "DELETE FROM room_master WHERE roomid='$roomId'";
-                                            $deleteResult  = mysqli_query($conn, $sql);
-                                            if($deleteResult) {
-                                                echo "Success!";
-                                                header("Refresh: 1;room_master.php");
-                                            }
-                                            else {
-                                                echo "Error!";
-                                            }
-                                        }
-                                    }
                                     echo '<form action="/HotelBookingSystem/admin/room_master.php" method="POST">
-                                            <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="' . $roomId . '" value="' . $roomId . '">Delete</button></td>
+                                            <input type="hidden" name="id" value="' . $roomId .'" />
+                                            <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form2_delete">Delete</button></td>
                                         </form>
                                         </tr>';
                                 }

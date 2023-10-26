@@ -28,6 +28,11 @@
                 </a>
             </li>
             <li class="nav-item mt-1 mb-1">
+                <a class="text-decoration-none nav-link active text-white" style="background-color:#ff6537ff;" href="location_master.php">
+                Manage Hotel Locations
+                </a>
+            </li>
+            <li class="nav-item mt-1 mb-1">
                 <a class="text-decoration-none nav-link active text-white" style="background-color:#ff6537ff;" href="room_allot.php">
                 Room Allotment
                 </a>

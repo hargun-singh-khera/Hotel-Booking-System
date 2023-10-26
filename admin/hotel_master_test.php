@@ -14,10 +14,10 @@
             $hotelname = $_POST["hotelname"];
             $file_name = $_FILES['image']['name'];
             $tmp_name = $_FILES['image']['tmp_name'];
-            // $folder = '../Image/Hotels' .$file_name; 
+            $folder = '../Image/Hotels' .$file_name; 
 
             $sql = "INSERT INTO hotel_master(`hotel_name`, `hotelimage`) VALUES('$hotelname','$file_name')";
-            // echo "<br/>" .$sql;
+            echo "<br/>" .$sql;
             $result = mysqli_query($conn, $sql);
 
             // $sql = "INSERT INTO hotel_master(hotel_name) VALUES('$hotelname')";
@@ -29,12 +29,12 @@
                 $showSubmitSuccess = true;
             }
 
-            // if(move_uploaded_file($tmp_name, $folder)) {
-            //     echo "<h2> File uploaded successfully</h2>";
-            // }
-            // else {
-            //     echo "<h2> File was not uploaded successfully</h2>";
-            // }
+            if(move_uploaded_file($tmp_name, $folder)) {
+                echo "<h2> File uploaded successfully</h2>";
+            }
+            else {
+                echo "<h2> File was not uploaded successfully</h2>";
+            }
 
             $showSubmitAlert = true;
         }
@@ -128,10 +128,10 @@
             ?>
             <div class="container" style="margin-top:5rem;" >
             <div class="row d-flex align-items-center justify-content-center mb-5">
-                    <div class="col-md-10 ">
+                    <div class="col-md-8 ">
                         <div class="card shadow p-5 border-0 rounded me-5">
                             <h2 >Manage Hotels</h2>
-                            <form action="/HotelBookingSystem/admin/hotel_master.php" method="POST" enctype="multipart/form-data">
+                            <form action="/HotelBookingSystem/admin/hotel_master_test.php" method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                                     <?php
@@ -158,8 +158,6 @@
                                         <label for="formFile" class="form-label">Upload Hotel Image</label>
                                         <input class="form-control" type="file" id="image" name="image">
                                     </div>
-                                    <label for="exampleInputPassword1" class="form-label">Hotel Location</label>
-                                    <input type="text" class="form-control" id="hotellocation" name="hotellocation" required/>
                                     <?php
                                         if(!$isUpdate) {
                                             echo '<div class="text-center mt-4">
@@ -187,7 +185,6 @@
                                     <tr>
                                         <th scope="col">S.No.</th>
                                         <th scope="col">Hotels</th>
-                                        <th scope="col">Location</th>
                                         <th scope="col"></th>
                                         <th scope="col"></th>
                                     </tr>
@@ -199,13 +196,12 @@
                                         $hotelId = $row["HotelId"];
                                         echo '<tr>
                                         <th scope="row">' .$i . '</th>
-                                        <td>' .$row["Hotel_Name"] . '</td>
                                         <td>' .$row["Hotel_Name"] . '</td>';
-                                        echo '<form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
+                                        echo '<form action="/HotelBookingSystem/admin/hotel_master_test.php" method="POST">
                                                 <input type="hidden" name="id" value="' . $hotelId .'" />
                                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form3_update">Update</button></td>
                                             </form>';
-                                        echo '<form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
+                                        echo '<form action="/HotelBookingSystem/admin/hotel_master_test.php" method="POST">
                                                 <input type="hidden" name="id" value="' . $hotelId .'" />
                                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form2_delete">Delete</button></td>
                                             </form>

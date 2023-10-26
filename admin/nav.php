@@ -33,7 +33,7 @@
                 </a>
             </li>
             <li class="nav-item mt-1 mb-1">
-                <a class="text-decoration-none nav-link active text-white" style="background-color:#ff6537ff;" href="hotel_master.php">
+                <a class="text-decoration-none nav-link active text-white" style="background-color:#ff6537ff;" href="user_master.php">
                 Manage Users
                 </a>
             </li>

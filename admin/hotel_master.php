@@ -1,11 +1,14 @@
 <?php
+    session_start();
+
     include '../partials/dbconnect.php';
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
+    $showUpdateSuccess = false;
     $showSubmitAlert = false;
     $showDeleteAlert = false;
-    // $showDeleteSuccess = false;
-    // $showDeleteAlert = false;
+    $showUpdateAlert = false;
+    $isUpdate = false;
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["form1_submit"])) {
             $hotelname = $_POST["hotelname"];
@@ -22,14 +25,36 @@
         if(isset($_POST["form2_delete"])) {
             $id = $_POST["id"];
             $sql = "DELETE FROM hotel_master WHERE hotelid='$id'";
-            $deleteResult  = mysqli_query($conn, $sql);
-            if(!$deleteResult) {
-                $showDeleteSuccess = false;
+            try {
+                $deleteResult  = mysqli_query($conn, $sql);
+                if(!$deleteResult) {
+                    $showDeleteSuccess = false;
+                }
+                else {
+                    $showDeleteSuccess = true;
+                }
+            }
+            catch(Exception $e) {}
+            $showDeleteAlert = true;
+        }
+        if(isset($_POST["form3_update"])) {
+            $id = $_POST["id"];
+            $_SESSION["hotelid"] = $id;
+            $isUpdate = true;
+        }
+        if(isset($_POST["form4_update"])) {
+            $hotelid = $_SESSION["hotelid"];
+            $hotelname = $_POST["hotelname"];
+            $sql = "UPDATE hotel_master SET hotel_name='$hotelname' WHERE hotelid='$hotelid'";
+            // echo "<br/>" .$sql;
+            $result = mysqli_query($conn, $sql);
+            if(!$result) {
+                $showUpdateSuccess = false;
             }
             else {
-                $showDeleteSuccess = true;
+                $showUpdateSuccess = true;
             }
-            $showDeleteAlert = true;
+            $showUpdateAlert = true;
         }
     }
 ?>
@@ -48,45 +73,77 @@
             <?php
                 if($showSubmitSuccess && $showSubmitAlert) {
                     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Success!</strong> New Room has been added to the database.
+                            <strong>Success!</strong> New Hotel has been added to the database.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>';
-                    // header('Refresh: 1; room_master.php');
                 }
                 else if($showSubmitAlert && !$showSubmitSuccess) {
                     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Error!</strong> Room Type already exists in the database.
+                            <strong>Error!</strong> Hotel Type already exists in the database.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>';
-                    // header('Refresh: 1; room_master.php'); 
+                        </div>'; 
                 }
                 else if($showDeleteAlert && $showDeleteSuccess) {
                     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Success!</strong> Record has been deleted successfully.
+                            <strong>Success!</strong> Hotel has been deleted successfully.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>';
-                    // header('Refresh: 1; room_master.php'); 
+                        </div>'; 
                 }
                 else if($showDeleteAlert && !$showDeleteSuccess) {
                     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Error!</strong> Record was not deleted.
+                            <strong>Error!</strong> Hotel was not deleted.
+                            <ul><li>Possible reason: You might have alloted some rooms to this hotel.</li>
+                            <li>Fix: Please de-allocate the room types from this hotel before proceeding.</li></ul>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>';
-                    // header('Refresh: 1; room_master.php'); 
+                        </div>'; 
+                }
+                else if($showUpdateAlert && $showUpdateSuccess) {
+                    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> Hotel name updated successfully.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>'; 
+                }
+                else if($showUpdateAlert && !$showUpdateSuccess) {
+                    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Hotel was not updated.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>'; 
                 }
             ?>
             <div class="container" style="margin-top:5rem;" >
             <div class="row d-flex align-items-center justify-content-center mb-5">
                     <div class="col-md-8 ">
                         <div class="card shadow p-5 border-0 rounded me-5">
-                            <h2 >Add Hotels</h2>
+                            <h2 >Manage Hotels</h2>
                             <form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
                                 <div class="mb-3">
                                     <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
-                                    <input type="text" class="form-control" id="hotelname" name="hotelname" required>
-                                    <div class="text-center mt-4">
-                                        <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
-                                    </div>
+                                    <?php
+                                        if(!$isUpdate) {
+                                            echo '<input type="text" class="form-control" id="hotelname" name="hotelname" required>
+                                            <div class="text-center mt-4">
+                                                <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
+                                            </div>';
+                                        }
+                                        else {
+                                            if(isset($_SESSION["hotelid"])) {
+                                                $hotelid = $_SESSION["hotelid"];
+                                                $sql = "SELECT * FROM hotel_master WHERE hotelid='$hotelid'";
+                                                // echo "<br/>" .$sql;
+                                                $result = mysqli_query($conn, $sql);
+                                                $num = mysqli_num_rows($result);
+                                                if($num) {
+                                                    while($row = mysqli_fetch_assoc($result)) {
+                                                        echo '<input type="text" class="form-control" id="hotelname" name="hotelname" value="' .$row["Hotel_Name"] .'" required>
+                                                        <div class="text-center mt-4">
+                                                            <button type="submit" class="btn btn-primary w-100" name="form4_update" style="background-color: #ff6537ff; border:none;">Save Entry</button>
+                                                        </div>';
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    ?>
                                 </div>
                             </form>
                             <?php
@@ -108,16 +165,22 @@
                                     </thead>
                                     <tbody>
                                     ';
+                                    $i=1;
                                     while($row=mysqli_fetch_assoc($result)) {
                                         $hotelId = $row["HotelId"];
                                         echo '<tr>
-                                        <th scope="row">' .$hotelId . '</th>
+                                        <th scope="row">' .$i . '</th>
                                         <td>' .$row["Hotel_Name"] . '</td>';
+                                        echo '<form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
+                                                <input type="hidden" name="id" value="' . $hotelId .'" />
+                                                <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form3_update">Update</button></td>
+                                            </form>';
                                         echo '<form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
                                                 <input type="hidden" name="id" value="' . $hotelId .'" />
                                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form2_delete">Delete</button></td>
                                             </form>
                                             </tr>';
+                                        $i++;
                                     }
                                     echo '</tbody>
                                 </table>';

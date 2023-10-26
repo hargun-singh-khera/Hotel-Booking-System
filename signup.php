@@ -1,34 +1,45 @@
 <?php 
     $showAlert=false;
     $showError=false;
+    $showWarning = false;
     if($_SERVER['REQUEST_METHOD'] == "POST") {
         include 'partials/dbconnect.php';             
         $name = $_POST["name"];
         $email = $_POST["email"];
         $password = $_POST["password"];
         $cpassword = $_POST["cpassword"];
-        // Check whether username exits or not
-        $sql = "SELECT * FROM users WHERE email='$email'";
-        $result = mysqli_query($conn, $sql);
-        $numRows = mysqli_num_rows($result);
-        if($numRows > 0) {
-            $showError = "User having email: $email already exists";
-        }
-        else {
-            if(($password == $cpassword)) {
-                $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                $sql = "INSERT INTO `users` (`name`, `email`, `password`) VALUES ('$name', '$email', '$password_hash')";
-                $result = mysqli_query($conn, $sql);
-                if($result) {
-                    $showAlert = true;
-                    header("Refresh: 1; login.php");
-                }
+        if($name && $email && $password && $cpassword) {
+            $sql = "SELECT * FROM users_master WHERE email='$email'";
+            $result = mysqli_query($conn, $sql);
+            if(!$result) {
+                $showError = "We're facing some technical issues right now. We regret for the inconvenience caused to you. Please try again later.";
+            }
+            $numRows = mysqli_num_rows($result);
+            if($numRows > 0) {
+                $showError = "User having email: $email already exists";
             }
             else {
-                $showError = "Passwords & Confirm Password doesn't matches";
+                // echo "Password: " .$password . " , Cpassword: " .$cpassword;
+                if(($password == $cpassword)) {
+                    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                    $sql = "INSERT INTO users_master (`username`, `email`, `password`, `usertypeid`) VALUES ('$name', '$email', '$password_hash', 2)";
+                    // $sql = "INSERT INTO users_master (`username`, `email`, `password`, `usertypeid`) VALUES ('$name', '$email', '$password_hash', 1)";
+                    $result = mysqli_query($conn, $sql);
+                    if($result) {
+                        $showAlert = true;
+                        header("Refresh: 1; login.php");
+                    }
+                }
+                else {
+                    $showError = "Passwords & Confirm Password doesn't matches";
+                }
             }
         }
+        else {
+            $showWarning = "All fields are required";
+        }
     }
+    
 ?>
 
 <!doctype html>
@@ -55,6 +66,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>';
         }
+        if($showWarning) {
+            echo '
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>' .$showWarning . '</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+        }
     ?>
     
     <div class="container d-flex align-items-center justify-content-center mt-5 ">
@@ -74,20 +92,20 @@
                                 <input type="name" class="form-control" id="name" name="name" placeholder="Name"  required/>
                             </div>
                             <div class="mb-1">
-                                <label for="email" class="form-label">E-mail address</label>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email"  required/>
+                                <label for="email" class="form-label mt-1">E-mail address</label>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email" />
                             </div>
                             <div class="mb-1">
-                                <label for="password" class="form-label">Password</label>
+                                <label for="password" class="form-label mt-1">Password</label>
                                 <input type="password" maxlength="23" class="form-control" id="password" name="password" placeholder="Password" required/>
                             </div>
                             <div class="mb-1">
-                                <label for="cpassword" class="form-label">Confirm Password</label>
+                                <label for="cpassword" class="form-label mt-1">Confirm Password</label>
                                 <input type="password" maxlength="23" class="form-control" id="cpassword" name="cpassword" placeholder="Confirm Password" required/>
                             </div>
                             <div class="col-12 mb-4 mt-2">
                                 <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required />
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required/>
                                 <label class="form-check-label" for="invalidCheck">
                                     Agree to terms and conditions
                                 </label>

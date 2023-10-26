@@ -71,7 +71,6 @@
             $deleteResult  = mysqli_query($conn, $sql);
             if(!$deleteResult) {
                 $showDeleteSuccess = false;
-                
             }
             else {
                 $showDeleteSuccess = true;
@@ -159,9 +158,9 @@
               <div class="card shadow p-5 border-0 rounded me-5">
                 <h2 >Room Allotment to Hotels</h2>
                 
-                <form id="myForm" action="room_allot.php" method="POST">
+                <form id="myForm" action="room_allot_test.php" method="POST">
                     <div class="mb-3">
-                      <form id="myForm" action="room_allot.php" method="POST">
+                      <form id="myForm" action="room_allot_test.php" method="POST">
                         <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                         <?php
                             if(!$isUpdate) {
@@ -321,11 +320,11 @@
                             <th scope="row">' .$i . '</th>
                             <td>' .$row["Room_Type"] .'</td>
                             <td>' .$row["No_Of_Rooms"] .'</td>';
-                            echo '<form action="/HotelBookingSystem/admin/room_allot.php" method="POST">
+                            echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
                                 <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form2_update">Update</button></td>
                             </form>';
-                            echo '<form action="/HotelBookingSystem/admin/room_allot.php" method="POST">
+                            echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
                                 <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form3_delete">Delete</button></td>
                             </form>

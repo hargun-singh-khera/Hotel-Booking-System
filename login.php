@@ -6,7 +6,7 @@
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        $sql = "SELECT * FROM users WHERE Email='$email'";
+        $sql = "SELECT * FROM users_master WHERE email='$email'";
         $result = mysqli_query($conn, $sql);
         $num = mysqli_num_rows($result);
         if($num == 1) {
@@ -15,7 +15,7 @@
                     $login = true;
                     session_start();
                     $_SESSION['loggedin'] = true;
-                    $_SESSION['name'] = $row["Name"];
+                    $_SESSION['name'] = $row["UserName"];
                     
                     header("Refresh: 1; index.php");
                 }
@@ -65,21 +65,21 @@
                     <div class="col my-auto">
                         <img src="images/logo.png" class="img-fluid  mx-auto d-block" alt="image" width="60" height="20" />
                         <div class="card-body">
-                        <h5 style="font-size:30px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mt-2">Hello! Welcome Back</h5>
-                        <small class="text-body-secondary" >Log in with your data that you entered during your registration.</small>
+                        <h5 style="font-size:30px; margin-bottom:0px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mt-2" >Hello! Welcome Back</h5>
+                        <small class="text-body-secondary">Log in with your data that you entered during your registration.</small>
         
                         <form class="w-auto m-auto mt-3" action="/HotelBookingSystem/login.php" method="POST">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" />
+                                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" required/>
                                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required/>
                             </div>
                             <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" />
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1" required/>
                                 <label class="form-check-label" for="exampleCheck1">Remember Me</label>
                             </div>
                             <div class="text-center">

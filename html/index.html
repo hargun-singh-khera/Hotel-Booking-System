@@ -7,167 +7,153 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   </head>
   <body>
-    <main class="d-flex flex-nowrap">
-        <div class="d-flex position-fixed flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:100%;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-              
-              <span class="fs-4">Dashboard</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-              <li class="nav-item">
-                <a href="#" class="nav-link active text-white" aria-current="page" style="background-color:#ff6537ff;">
-                  Home
-                </a>
-              </li>
-              <li>
-                  <div class="btn-group dropend mt-2 nav nav-pills flex-column mb-auto " >
-                      <button type="button" class="btn btn-primary dropdown-toggle text-start" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#ff6537ff;border:none;">
-                        Room Master 
-                      </button>
-                      <ul class="dropdown-menu">
-                          <li><button class="dropdown-item" type="button"><a href="second.html">Add Room</a></button></li>
-                          <li><button class="dropdown-item" type="button">Update Room</button></li>
-                          <li><button class="dropdown-item" type="button">Delete Room</button></li>
-                        </ul>
-                    </div>
-              </li>
-              <li>
-                  <div class="btn-group dropend mt-2 nav nav-pills flex-column mb-2 ">
-                      <button type="button" class="btn btn-primary dropdown-toggle text-start" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#ff6537ff;border:none;">
-                        Hotel Master 
-                      </button>
-                      <ul class="dropdown-menu">
-                          <li><button class="dropdown-item" type="button">Add Hotel</button></li>
-                          <li><button class="dropdown-item" type="button">Update Hotel</button></li>
-                          <li><button class="dropdown-item" type="button">Delete Hotel</button></li>
-                        </ul>
-                    </div>
-              </li>
-              <li class="nav-item">
-                  <a href="#" class="nav-link active text-white" aria-current="page" style="background-color:#ff6537ff;">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-                          <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-                      </svg> Logout
-                  </a>
-              </li>
-            </ul>          
-        </div>
-      
-        <!-- <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary w-75">
-            <div class="alert alert-success" role="alert" >
-                <h4 class="alert-heading">Welcome Admin!</h4><hr>
-                <p class="mb-0">Your contributions are the backbone of our organization. Welcome!</p>
-            </div>
-        </div> -->
-        <div class="container" style="margin-top:5rem;" >
-          <div class="row d-flex align-items-center justify-content-center mb-5">
-                  <div class="col-md-9 ">
-                      <div class="card shadow p-5 border-0 rounded me-5">
-                          <h2 >Add Rooms</h2>
-                          <form action="/HotelBookingSystem/admin/room_master.php" method="POST">
-                              <div class="mb-3">
-                                  <label for="exampleInputPassword1" class="form-label">Room Type</label>
-                                  <input type="text" class="form-control" id="roomtype" name="roomtype" required>
-                                  <div class="text-center mt-4">
-                                      <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
-                                  </div>
-                              </div>
-                          </form>
-                          <?php
-                              $sql = "SELECT * FROM room_master ORDER BY RoomId ASC";
-                              $result = mysqli_query($conn, $sql);
-                              $num = mysqli_num_rows($result);
-                              if($num) {
-                                  echo '
-                                  <hr />
-                                  <h4>Recently Added Rooms</h4>
-                                  <table class="table">
-                                  <thead>
-                                  <tr>
-                                      <th scope="col">S.No.</th>
-                                      <th scope="col">Rooms</th>
-                                      <th scope="col"></th>
-                                      <th scope="col"></th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  ';
-                                  while($row=mysqli_fetch_assoc($result)) {
-                                      echo '<tr>
-                                      <th scope="row">' .$row["RoomId"] . '</th>
-                                      <td>' .$row["Room_Type"] . '</td>
-                                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form1_submit">Update</button></td>
-                                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form1_submit">Delete</button></td>
-                                      </tr>';
-                                  }
-                                  echo '</tbody>
-                              </table>';
-                              }
-                          ?>
-                      </div>
-                  </div>
-              </div>
-      </div>
-        <!-- <div class="container"  style="margin-top: 5rem;">
-          <div class="row d-flex align-items-center justify-content-center mb-5">
-            <div class="col-md-8 ">
-              <div class="card shadow p-5 border-0 rounded me-5">
-                <h2 >Rooms Allotment to Hotels</h2>
-                <form action="/HotelBookingSystem/admin/index.php" method="POST">
-                  <div class="mb-3">
-                      <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
-                      <select class="form-select mb-2" id="hotelname" name="hotelname" aria-label="Default select example">
-                        <option selected>Choose from Hotel Names</option>
-                        <option value="1">Taj Hotel</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select>
-                      <label for="exampleInputPassword1" class="form-label">Room Type</label>
-                      <select class="form-select mb-2" id="roomtype" name="roomtype" aria-label="Default select example">
-                        <option selected>Choose from Room Types</option>
-                        <option value="1">Single AC</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                      </select>
-                      <label for="exampleInputPassword1" class="form-label ">No of Rooms Available</label>
-                      <input type="number" class="form-control mb-2" id="noofrrooms" name="noofrooms" aria-describedby="emailHelp">
-                      <label for="exampleInputPassword1" class="form-label ">No of Guests</label>
-                      <input type="number" class="form-control" id="noofrrooms" name="noofrooms" aria-describedby="emailHelp">
-                      <div class="text-center mt-4">
-                          <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
-                      </div>
-                  </div>
-                </form>
-                <hr />
-                <h4>Rooms Alloted to Hotels</h4>
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">S.No.</th>
-                      <th scope="col">Room Type</th>
-                      <th scope="col">No of Rooms Available</th>
-                      <th scope="col"></th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Single AC</td>
-                      <td>100</td>
-                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form1_submit">Update</button></td>
-                      <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form1_submit">Delete</button></td>
-                    </tr>
-                  </tbody>
-                </table>
+ 
+
+      <!-- <div class="d-flex align-items-center justify-content-center mt-5 ">
+        <div class="card shadow-lg p-3 mb-5 rounded border-0 mb-3 w-75 " >
+          <div class="row g-0">
+            <div class="col">
+              <div class=" d-flex card-body">
+                <span class="leading-none inline-flex items-center justify-center h-full w-full transform mt-4 me-2" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="pointer-events-none max-h-full max-w-full"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"><path d="M10 3a7 7 0 107 7 7 7 0 00-7-7zM21 21l-6-6" vector-effect="non-scaling-stroke"></path></g></svg></span>
+                <div class="">
+                  <label for="location">Location</label>  
+                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Where to?">
+                </div>
+                <div class="d-flex ms-2 me-2 h-auto">
+                  <div class="vr"></div>
+                </div>
+                <div class="">
+                  <label for="check_in">Check In</label>  
+                  <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="d-flex ms-2 me-2 h-auto">
+                  <div class="vr"></div>
+                </div>
+                <div class="">
+                  <label for="check_out">Check Out</label>  
+                  <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="d-flex ms-2 me-2 h-auto">
+                  <div class="vr"></div>
+                </div>
+                <div class="">
+                  <label for="guests">Guests</label>  
+                  <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="No. of Guests">
+                </div>
+                <div class="d-flex ms-2 me-2 h-auto">
+                  <div class="vr"></div>
+                </div>
+                <div class="me-5">
+                  <label for="location">Rooms</label>  
+                  <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="No. of Rooms">
+                </div>
+                  
+                <button type="submit" class="btn btn-primary mt-3" style="background-color: #ff6537ff; border:none; max-height:50px">Search</button>
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
+      </div> -->
+      <div class="container tab-pane active">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3">
+            <div class="col-md-3 mb-2 mb-md-0">
+                <a href="index.php" class="d-inline-flex link-body-emphasis text-decoration-none">
+                <img src="../images/logo.png" alt="img" width="40" height="40"/> <h4 class="mt-2">Heritage</h4>
+                </a>
+            </div>
+            <ul class="nav nav-pills nav-fill gap-2 p-1 large  rounded-5 shadow-sm" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: #ff6537ff; --bs-nav-pills-link-active-bg: var(--bs-white); background-color:#ff6537ff;">
+                <li class="nav-item" role="presentation">
+                    <a href="index.php" style="text-decoration:none;"><button class="nav-link active rounded-5" id="home-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="true">Home</button></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="#facilities" style="text-decoration:none;"><button class="nav-link rounded-5" id="profile-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">Facilities</button></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="#about-us" style="text-decoration:none;"><button class="nav-link rounded-5" id="contact-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">About Us</button></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="#contact" style="text-decoration:none;"><button class="nav-link rounded-5" id="contact-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">Contact</button></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a href="#faqs" style="text-decoration:none;"><button class="nav-link rounded-5" id="contact-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">FAQs</button></a>
+                </li>
+            </ul>
 
-      </main>
+            <div class="col-md-3 text-end">
+              <button type="button" class="btn btn-outline-primary me-2 rounded-pill" style="border-color:#ff6537ff; color:#ff6537ff"><a href="login.php" style="text-decoration:none; color: #ff6537ff">Login</a></button>
+              <button type="button" class="btn btn-primary rounded-pill" style="background-color:#ff6537ff;border-color:#ffffff"><a href="signup.php" style="text-decoration:none; color:white;">Sign-up</a></button>
+           </div>
+        </header>
+      </div>
+      <hr/>
+      <div class="container">
+        <!-- <h1>HEllo</h1> -->   
+        <div class="d-flex">
+          <div class="col-md-6" style="margin-right:4rem;">
+            <!-- <h1>HEllo</h1> -->
+            <img src="../images/img14.png" alt="image" width="650px" style="border-radius: 15px;"/>
+          </div>
+          <div class="col-md-5 ">
+            <div class="card align-items-center" style="border-radius: 12px;margin-left:5px">
+              <div class="card-body">
+                <h3 style="font-size: 35px;">Hotel Hindusthan International, Kolkata</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="col-md-3 " >
+                    <!-- Div 1 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    </svg>
+                    &nbsp;Manali
+                  </div>
+                  <div class="col-md-3 " >
+                    <!-- Div 2 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                      <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16" style="color:#FFC24A;">
+                      <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                  </svg>
+                  </div>
+                  <div class="col-md-2 ">
+                    <!-- Div 3 -->
+                    <h5 class="m-auto" style="color:#ff6537ff;"><b>₹ 2446/-</b></h5>
+                  </div>
+                </div>
+                <p class="description mt-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde laudantium reiciendis facilis libero, praesentium, voluptatibus nostrum autem temporibus itaque obcaecati earum iure quidem quod totam assumenda quaerat provident. Sapiente sed dolor debitis nobis officia in maxime nemo, beatae et corrupti, cumque veritatis ut deserunt, blanditiis perspiciatis vitae. Fugit eius, deserunt ratione ipsam facilis molestiae maiores illo tempora qui! Aut obcaecati cupiditate ab nesciunt doloremque sit debitis sunt ratione, error velit vitae, perspiciatis veritatis repellat. Sit quos doloribus blanditiis possimus excepturi quod quam culpa iste at nostrum sed asperiores minus minima dicta expedita recusandae, saepe laborum quibusdam fugiat aliquid temporibus facere?</p>
+                <button class="btn btn-primary w-100 mt-2" style="background-color: #ff6537ff; border:none">Select Room</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="container">
+        <h4>Rooms Available</h4>
+        <div class="card mt-3 mb-3" style="max-width: 940px;">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="../images/img14.png" class="img-fluid rounded-start h-auto w-auto" alt="..." >
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>
 </html>

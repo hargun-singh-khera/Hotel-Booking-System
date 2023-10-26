@@ -1,32 +1,42 @@
 <?php 
     $login = false;
     $showError = false;
+    $showWarning = false;
     if($_SERVER['REQUEST_METHOD'] == "POST") {
         include '../partials/dbconnect.php';
-        $name = $_POST["name"];
-        $password = $_POST["password"];
-
-        $sql = "SELECT * FROM users WHERE name='admin'";
-        $result = mysqli_query($conn, $sql);
-        $num = mysqli_num_rows($result);
-
-        if($num == 1) {
-            while($row=mysqli_fetch_assoc($result)) {
-                if(password_verify($password, $row['Password'])) {
-                    $login = true;
-                    session_start();
-                    $_SESSION['loggedin'] = true;
-                    $_SESSION['name'] = $row["Name"];
-                    
-                    header("Refresh: 1; index.php");
+        if(isset($_POST["form_login"])) {
+            $name = $_POST["name"];
+            $password = $_POST["password"];
+            if(!$name || !$password) {
+                $showWarning = "Enter all parameters";
+            }
+            else {
+                $sql = "SELECT * FROM users_master WHERE usertypeid=1";
+                $result = mysqli_query($conn, $sql);
+                $num = mysqli_num_rows($result);
+        
+                if($num == 1) {
+                    while($row=mysqli_fetch_assoc($result)) {
+                        if(password_verify($password, $row['Password'])) {
+                            $login = true;
+                            session_start();
+                            $_SESSION['adminloggedin'] = true;
+                            $_SESSION['loggedin'] = true;
+                            $_SESSION['name'] = $row["UserName"];
+                            // $_SESSION['usertypeid'] = 1;
+                            
+                            header("Refresh: 1; index.php");
+                        }
+                        else {
+                            $showError = "Invalid admin credentials";
+                        }
+                    }
                 }
                 else {
                     $showError = "Invalid admin credentials";
                 }
             }
-        }
-        else {
-            $showError = "Invalid admin credentials";
+    
         }
     }
 
@@ -55,6 +65,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>';
         }
+        if($showWarning) {
+            echo '
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>' .$showWarning . '</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+        }
+
     ?>
     <div class="container d-flex align-items-center justify-content-center " style="margin-top:5rem;">
         <div class="card mb-3 border-0  ">
@@ -77,10 +95,10 @@
                                 <input type="password" class="form-control" id="password" name="password"/>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary text-center" id="login-btn" style="background-color:#ff6537ff; border:none; min-width:390px;">Login</button>
+                                <button type="submit" class="btn btn-primary text-center" id="login-btn" name="form_login" style="background-color:#ff6537ff; border:none; min-width:390px;">Login</button>
                             </div>
                             <div class="text-center mt-2">
-                                <a href="index.php" style="color:#ff6537ff;text-decoration:none;">Back to Home</Link>
+                                <a href="../index.php" style="color:#ff6537ff;text-decoration:none;">Back to Home</Link>
                             </div>
                         </form>
                     </div>

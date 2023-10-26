@@ -1,8 +1,8 @@
 <?php 
     session_start();
-    if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true) {
+    if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
         echo  "Redirecting";
-        header('location: login.php');
+        header('Location: login.php');
         exit;
     }
 
@@ -160,7 +160,7 @@
         <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary ms-2" style="width:76em;">
             <div class="alert alert-success" role="alert" >
                 <h4 class="alert-heading">Welcome Admin!</h4><hr>
-                <p class="mb-0">Your contributions are the backbone of our organization. Welcome!</p>
+                <p class="mb-0">Your contributions are the backbone of our organization. Welcome! <?php echo $_SESSION["name"];?></p>
             </div>
         </div>
       </main>

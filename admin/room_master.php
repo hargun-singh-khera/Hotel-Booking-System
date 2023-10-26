@@ -1,13 +1,20 @@
 <?php
+    session_start();
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
+    $showUpdateSuccess = false;
     $showSubmitAlert = false;
     $showDeleteAlert = false;
+    $showUpdateAlert = false;
+    $isUpdate = false;
     include '../partials/dbconnect.php';
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["form1_submit"])) {
             $roomtype = $_POST["roomtype"];
+            // $_SESSION['room'] = $roomtype;
+            // echo 'Room Type: ' .$_SESSION["room"];
             $sql = "INSERT INTO room_master(room_type) VALUES('$roomtype')";
+            // echo "<br/> " .$sql; 
             $result = mysqli_query($conn, $sql);
             if(!$result) {
                 $showSubmitSuccess = false;
@@ -17,17 +24,46 @@
             }
             $showSubmitAlert = true;
         }
+
         if(isset($_POST["form2_delete"])) {
             $id = $_POST["id"];
             $sql = "DELETE FROM room_master WHERE roomid='$id'";
-            $deleteResult  = mysqli_query($conn, $sql);
-            if(!$deleteResult) {
-                $showDeleteSuccess = false;
+            // echo "<br/>" .$sql;
+            try {
+                $deleteResult  = mysqli_query($conn, $sql);
+                if(!$deleteResult) {
+                    $showDeleteSuccess = false;
+                    // echo "Error message: " .mysqli_error($conn);
+                }
+                else {
+                    $showDeleteSuccess = true;
+                }
             }
-            else {
-                $showDeleteSuccess = true;
-            }
+            catch(Exception $e) {}
+            // echo "Hello delete <br/>";
             $showDeleteAlert = true;
+        }
+        if(isset($_POST["form3_update"])) {
+            $isUpdate = true;
+            $id = $_POST["id"];
+            $_SESSION['roomid'] = $id;
+        }
+
+        if(isset($_POST["form4_update"])) {
+            if(isset($_SESSION['room'])) {
+                $roomtype = $_POST['roomtype'];
+                $roomid = $_SESSION['roomid'];
+                $sql = "UPDATE room_master SET room_type='$roomtype' WHERE roomid='$roomid'";
+                echo "<br/>" .$sql;
+                // $result = mysqli_query($conn, $sql);
+                // if(!$result) {
+                //     $showUpdateSuccess = false;
+                // }
+                // else {
+                //     $showUpdateSuccess = true;
+                // }
+                $showUpdateAlert = true;
+            }
         }
     }
     
@@ -70,6 +106,22 @@
                     else if($showDeleteAlert && !$showDeleteSuccess) {
                         echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong>Error!</strong> Record was not deleted.
+                                <ul><li>Possible resason: You may have alloted this room type to a hotel.</li> 
+                                <li>Fix: Please de-allocate this room type from all hotels before proceeding.</li></ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+                        // header('Refresh: 1; room_master.php'); 
+                    }
+                    else if($showUpdateAlert && $showUpdateSuccess) {
+                        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Success!</strong> Record updated successfully.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>';
+                        // header('Refresh: 1; room_master.php'); 
+                    }
+                    else if($showUpdateAlert && !$showUpdateSuccess) {
+                        echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> Record was not updated.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>';
                         // header('Refresh: 1; room_master.php'); 
@@ -79,14 +131,36 @@
             <div class="row d-flex align-items-center justify-content-center mb-5">
                 <div class="col-md-8 ">
                     <div class="card shadow p-5 border-0 rounded me-5">
-                        <h2 >Add Rooms</h2>
+                        <h2 >Manage Rooms</h2>
                         <form action="/HotelBookingSystem/admin/room_master.php" method="POST">
                             <div class="mb-3">
                                 <label for="exampleInputPassword1" class="form-label">Room Type</label>
-                                <input type="text" class="form-control" id="roomtype" name="roomtype" required>
-                                <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
-                                </div>
+                                <?php
+                                    if(!$isUpdate) {
+                                        echo '<input type="text" class="form-control" id="roomtype" name="roomtype" required>
+                                        <div class="text-center mt-4">
+                                            <button type="submit" class="btn btn-primary w-100" name="form1_submit" style="background-color: #ff6537ff; border:none;">Add Entry</button>
+                                        </div>';
+                                    }
+                                    else {
+                                        if(isset($_SESSION['roomid'])) {
+                                            $roomid = $_SESSION['roomid'];
+                                            $sql = "SELECT * FROM room_master WHERE roomid='$roomid'";
+                                            // echo "<br/>" .$sql;
+                                            $result = mysqli_query($conn, $sql);
+                                            $num = mysqli_num_rows($result);
+                                            if($num) {
+                                                while($row = mysqli_fetch_assoc($result)) {
+                                                    echo '<input type="text" class="form-control" id="roomtype" name="roomtype" value="' .$row["Room_Type"] .'" required>
+                                                    <div class="text-center mt-4">
+                                                        <button type="submit" class="btn btn-primary w-100" name="form4_update" style="background-color: #ff6537ff; border:none;">Save Entry</button>
+                                                    </div>';
+                                                }
+                                            }
+                                        }
+                                    }
+                                ?>
+                                
                             </div>
                         </form>
                         <?php
@@ -103,19 +177,26 @@
                                     <th scope="col">S.No.</th>
                                     <th scope="col">Rooms</th>
                                     <th scope="col"></th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
                                 <tbody>';
+                                $i=1;
                                 while($row=mysqli_fetch_assoc($result)) {
                                     $roomId = $row["RoomId"];
                                     echo '<tr>
-                                    <th scope="row">' .$roomId . '</th>
+                                    <th scope="row">' .$i . '</th>
                                     <td>' .$row["Room_Type"] . '</td>';
+                                    echo '<form action="/HotelBookingSystem/admin/room_master.php" method="POST">
+                                            <input type="hidden" name="id" value="' . $roomId .'" />
+                                            <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form3_update">Update</button></td>
+                                        </form>';
                                     echo '<form action="/HotelBookingSystem/admin/room_master.php" method="POST">
                                             <input type="hidden" name="id" value="' . $roomId .'" />
                                             <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form2_delete">Delete</button></td>
                                         </form>
                                         </tr>';
+                                    $i++;
                                 }
                                 echo '</tbody>
                             </table>';

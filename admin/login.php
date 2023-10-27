@@ -11,14 +11,16 @@
                 $showWarning = "Enter all parameters";
             }
             else {
-                $sql = "SELECT * FROM users_master WHERE UserTypeId=1";
+                // echo "Entered username: " .$name . "<br/>";
+                $sql = "SELECT * FROM users_master AS UM
+                INNER JOIN user_type_master AS UTM
+                ON UM.UserTypeId = UTM.UserTypeId
+                WHERE UTM.User_Type='admin' AND UM.UserName='$name'";
                 $result = mysqli_query($conn, $sql);
                 $num = mysqli_num_rows($result);
-                
                 if($num == 1) {
 
                     while($row=mysqli_fetch_assoc($result)) {
-                        echo "UserTypeId: " .$row["UserTypeId"] . ", Username: " .$row["UserName"];
                         if(password_verify($password, $row['Password'])) {
                             $login = true;
                             session_start();
@@ -28,7 +30,7 @@
                             
                             // $_SESSION['usertypeid'] = 1;
                             
-                            // header("Refresh: 1; index.php");
+                            header("Refresh: 1; index.php");
                         }
                         else {
                             $showError = "Invalid admin credentials";

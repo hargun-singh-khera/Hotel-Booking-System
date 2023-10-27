@@ -46,7 +46,7 @@
         if(isset($_POST["form3_update"])) {
             $isUpdate = true;
             $id = $_POST["id"];
-            echo "Hello update";
+            // echo "Hello update";
             $_SESSION['roomid'] = $id;
         }
 

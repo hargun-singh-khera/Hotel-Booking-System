@@ -73,7 +73,7 @@
             // echo "Hotel Name: " . $hotelname . ", Room Type: " . $roomtype . ", No of rooms: " .$noofrooms;
         }
         if(isset($_POST["form2_update"])) {
-            echo 'Hello update' .$_SESSION["hotelid"];
+            // echo 'Hello update' .$_SESSION["hotelid"];
             $id = $_POST["id"];
             $_SESSION["id"] = $id;
             $isUpdate = true;

@@ -3,7 +3,7 @@
     session_start();
     include 'partials/dbconnect.php';
     // echo "<br/>" .$_SESSION["hotelid"];
-    // echo $_SESSION["roomid"];
+    // echo "<br/>" .$_SESSION["roomid"];
     // echo "<br/>" .$_SESSION["CheckInDate"];
     // echo "<br/>" .$_SESSION["CheckOutDate"];
     // echo "<br/>" .$_SESSION["Guests"];
@@ -68,8 +68,34 @@
     <?php include 'partials/nav.php';?>
     <?php
         if($showSuccessAlert && isset($_SESSION["CheckInDate"])) {
+            $hotelname = NULL;
+            $roomname = NULL;
+            if(isset($_SESSION["hotelid"])) {
+                // echo "<br/>" .$_SESSION["hotelid"];
+                $hotelid = $_SESSION["hotelid"];
+                $sql = "SELECT * FROM hotel_master WHERE hotelid='$hotelid'";
+                $result = mysqli_query($conn, $sql);
+                $num = mysqli_num_rows($result);
+                if($num) {
+                    while($row = mysqli_fetch_assoc($result)) {
+                        $hotelname = $row["Hotel_Name"];
+                    }
+                }
+            }
+            if(isset($_SESSION["roomid"])) {
+                // echo "<br/>" .$_SESSION["roomid"];
+                $roomid = $_SESSION["roomid"];
+                $sql = "SELECT * FROM room_master WHERE roomid='$roomid'";
+                $result = mysqli_query($conn, $sql);
+                $num = mysqli_num_rows($result);
+                if($num) {
+                    while($row = mysqli_fetch_assoc($result)) {
+                        $roomname = $row["Room_Type"];
+                    }
+                }
+            }
             echo '<div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> Your booking has been confirmed for <strong>'.date('d M Y', strtotime($_SESSION["CheckInDate"])) .'</strong>. Thanks for choosing us.
+            <strong>Success!</strong> Your booking has been successfully  confirmed for <strong>'.date('d M Y', strtotime($_SESSION["CheckInDate"])) .'</strong> at <strong>'.$hotelname.'</strong>. You have reserved a <strong>'.$roomname.'</strong> Room for your stay. Thank you for choosing <strong>'.$hotelname.'</strong> for your accommodation needs.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>';
         }
@@ -253,10 +279,10 @@
                                         <div class="card-body" style="margin-top: -10px; margin-bottom:-10px;">
                                             <div class="row">
                                                 <div class="col">
-                                                    <h5>Amount Payable</h5>
+                                                    <h6><strong>Amount Payable</strong></h6>
                                                 </div>
                                                 <div class="col text-end">
-                                                    <h5>₹ '.$price+$tax.'.00</h5>
+                                                    <h6><strong>₹ '.$price+$tax.'.00</strong></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -291,7 +317,7 @@
                         </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary w-100 mt-3 mb-4" name="paybtn" id="paybtn" style="background-color: #ff6537ff; border:none; height:65px; border-radius:1.2rem;font-size:1.6rem;font-family: Quicksand;font-weight:bold; ">Proceed to Payment</button>
+                    <button class="btn btn-primary w-100 mt-3 mb-4" name="paybtn" id="paybtn" style="background-color: #ff6537ff; border:none; height:65px; border-radius:1.2rem;font-size:1.6rem;font-family: Quicksand;font-weight:bold; ">Confirm Your Booking</button>
                 </div>
             </div>
         </div>

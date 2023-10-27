@@ -16,7 +16,8 @@
                     session_start();
                     $_SESSION['loggedin'] = true;
                     $_SESSION['name'] = $row["UserName"];
-                    
+                    $_SESSION['userid'] =$row["UserId"];
+                    // echo "User Id: " .$_SESSION['userid'];
                     header("Refresh: 1; index.php");
                 }
                 else {
@@ -79,7 +80,7 @@
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" required/>
                             </div>
                             <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1" required/>
+                                <input type="checkbox" class="form-check-input" id="exampleCheck1"/>
                                 <label class="form-check-label" for="exampleCheck1">Remember Me</label>
                             </div>
                             <div class="text-center">

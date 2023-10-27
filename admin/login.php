@@ -11,21 +11,24 @@
                 $showWarning = "Enter all parameters";
             }
             else {
-                $sql = "SELECT * FROM users_master WHERE usertypeid=1";
+                $sql = "SELECT * FROM users_master WHERE UserTypeId=1";
                 $result = mysqli_query($conn, $sql);
                 $num = mysqli_num_rows($result);
-        
+                
                 if($num == 1) {
+
                     while($row=mysqli_fetch_assoc($result)) {
+                        echo "UserTypeId: " .$row["UserTypeId"] . ", Username: " .$row["UserName"];
                         if(password_verify($password, $row['Password'])) {
                             $login = true;
                             session_start();
                             $_SESSION['adminloggedin'] = true;
                             $_SESSION['loggedin'] = true;
                             $_SESSION['name'] = $row["UserName"];
+                            
                             // $_SESSION['usertypeid'] = 1;
                             
-                            header("Refresh: 1; index.php");
+                            // header("Refresh: 1; index.php");
                         }
                         else {
                             $showError = "Invalid admin credentials";

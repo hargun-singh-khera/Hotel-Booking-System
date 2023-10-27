@@ -29,7 +29,7 @@
             $_SESSION["CheckOutDate"] = $checkout;
             $_SESSION["Guests"] = $guests;
             $_SESSION["Rooms"] = $rooms;
-            echo "Location Id: " .$id . ", Check in: " .$_SESSION["CheckInDate"] .", Check out: " .$checkout . ', Guest: ' .$guests .", Rooms: " .$rooms;
+            // echo "Location Id: " .$id . ", Check in: " .$_SESSION["CheckInDate"] .", Check out: " .$checkout . ', Guest: ' .$guests .", Rooms: " .$rooms;
             
         }
     }

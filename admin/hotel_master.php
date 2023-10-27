@@ -12,16 +12,14 @@
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["form1_submit"])) {
             $hotelname = $_POST["hotelname"];
+            $location = $_POST["location"];
             $file_name = $_FILES['image']['name'];
             $tmp_name = $_FILES['image']['tmp_name'];
             // $folder = '../Image/Hotels' .$file_name; 
 
-            $sql = "INSERT INTO hotel_master(`hotel_name`, `hotelimage`) VALUES('$hotelname','$file_name')";
+            $sql = "INSERT INTO hotel_master(`hotel_name`, `locationid`, `hotelimage`) VALUES('$hotelname', '$location','$file_name')";
             // echo "<br/>" .$sql;
             $result = mysqli_query($conn, $sql);
-
-            // $sql = "INSERT INTO hotel_master(hotel_name) VALUES('$hotelname')";
-            // $result = mysqli_query($conn, $sql);
             if(!$result) {
                 $showSubmitSuccess = false;
             } 
@@ -159,7 +157,21 @@
                                         <input class="form-control" type="file" id="image" name="image">
                                     </div>
                                     <label for="exampleInputPassword1" class="form-label">Hotel Location</label>
-                                    <input type="text" class="form-control" id="hotellocation" name="hotellocation" required/>
+                                    <select class="form-select" aria-label="Default select example" id="location" name="location">
+                                        <?php
+                                            if(!$isUpdate) {
+                                                $sql = "SELECT * FROM location_master";
+                                                $result = mysqli_query($conn, $sql);
+                                                $num = mysqli_num_rows($result);
+                                                echo '<option selected>Choose from Locations</option>';
+                                                if($num) {
+                                                    while($row = mysqli_fetch_assoc($result)) {
+                                                        echo '<option value="' .$row["LocationId"] .'">' .$row["Location"] .'</option>';
+                                                    }
+                                                }
+                                            }
+                                        ?>
+                                    </select>
                                     <?php
                                         if(!$isUpdate) {
                                             echo '<div class="text-center mt-4">
@@ -175,7 +187,8 @@
                                 </div>
                             </form>
                             <?php
-                                $sql = "SELECT * FROM hotel_master ORDER BY HotelId ASC";
+                                $sql = "SELECT * FROM location_master AS LM INNER JOIN hotel_master AS HM
+                                ON LM.LocationId = HM.LocationId";
                                 $result = mysqli_query($conn, $sql);
                                 $num = mysqli_num_rows($result);
                                 if($num) {
@@ -192,15 +205,14 @@
                                         <th scope="col"></th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    ';
+                                    <tbody>';
                                     $i=1;
                                     while($row=mysqli_fetch_assoc($result)) {
                                         $hotelId = $row["HotelId"];
                                         echo '<tr>
                                         <th scope="row">' .$i . '</th>
                                         <td>' .$row["Hotel_Name"] . '</td>
-                                        <td>' .$row["Hotel_Name"] . '</td>';
+                                        <td>' .$row["Location"] . '</td>';
                                         echo '<form action="/HotelBookingSystem/admin/hotel_master.php" method="POST">
                                                 <input type="hidden" name="id" value="' . $hotelId .'" />
                                                 <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form3_update">Update</button></td>

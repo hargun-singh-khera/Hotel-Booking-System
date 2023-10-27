@@ -29,9 +29,12 @@
             $roomtypeselected = $_POST["roomtype"];
             $noofrooms = $_POST["noofrooms"];
             $noofguests = $_POST["noofguests"];
-            echo "No of guests: " .$noofguests;
+            
+            $file_name = $_FILES['image']['name'];
+            $tmp_name = $_FILES['image']['tmp_name'];
+            // echo "No of guests: " .$noofguests;
             $ratepernight = $_POST["ratepernight"];
-            echo "<br/> Rate per night: " .$ratepernight;
+            // echo "<br/> Rate per night: " .$ratepernight;
             $sql = "SELECT * FROM hotel_master WHERE hotelid='$hotelnameselected'";
             $result = mysqli_query($conn, $sql);
             $numRows = mysqli_num_rows($result);
@@ -52,8 +55,9 @@
             }
             // $sql = "INSERT INTO hotel_room_alloted (hotelid, roomid, no_of_rooms) VALUES ('$hotelnameselected', '$roomtypeselected', '$noofrooms')";
             try {
-                $sql = "INSERT INTO hotel_room_alloted (hotelid, roomid, no_of_rooms, no_of_guests, ratepernight) VALUES ('$hotelnameselected', '$roomtypeselected', '$noofrooms', '$noofguests', '$ratepernight')";
-                echo "<br/>". $sql;
+                $sql = "INSERT INTO hotel_room_alloted (hotelid, roomid, no_of_rooms, no_of_guests, ratepernight, roomimage) VALUES ('$hotelnameselected', '$roomtypeselected', '$noofrooms', '$noofguests', '$ratepernight', '$file_name')";
+                // echo "<br/>". $sql;
+                
                 $result = mysqli_query($conn, $sql);
                 if(!$result) {
                     $showSubmitSuccess = false;
@@ -93,13 +97,13 @@
             $noofrooms = $_POST["noofrooms"];
             $id = $_SESSION["id"];
             $noofguests = $_POST["noofguests"];
-            echo "<br/>No of guests: " .$noofguests;
+            // echo "<br/>No of guests: " .$noofguests;
             $ratepernight = $_POST["ratepernight"];
-            echo "<br/>Rate per night: " .$ratepernight;
+            // echo "<br/>Rate per night: " .$ratepernight;
 
             // echo "Hotelid: " .$hotelid . ", RoomId for set: " .$roomid .  ", Id: " .$id ."<br/>";
             $sql = "UPDATE hotel_room_alloted SET RoomId='$roomid', No_Of_Rooms='$noofrooms', No_Of_Guests='$noofguests', RatePerNight='$ratepernight' WHERE HotelId='$hotelid' AND RoomId='$id'";
-            echo "<br/>" .$sql;
+            // echo "<br/>" .$sql;
             $result = mysqli_query($conn, $sql);
             if(!$result) {
                 $showUpdateSuccess = false;
@@ -173,8 +177,9 @@
               <div class="card shadow p-5 border-0 rounded me-5">
                 <h2 >Room Allotment to Hotels</h2>
                 
-                <form id="myForm" action="room_allot_test.php" method="POST">
+                <form id="myForm" action="room_allot_test.php" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
+                      
                       <form id="myForm" action="room_allot_test.php" method="POST">
                         <label for="exampleInputPassword1" class="form-label">Hotel Name</label>
                         <?php
@@ -202,6 +207,25 @@
                                         }
                                     }
                                 }
+                                else {
+                                    $sql = "SELECT * FROM hotel_master WHERE hotelid='$hotelSelectedId'";
+                                    echo "<br/> " .$sql;
+                                    $result = mysqli_query($conn, $sql);
+                                    $num = mysqli_num_rows($result);
+                                    if($num) {
+                                        while($row = mysqli_fetch_assoc($result)) {
+                                            echo '<option selected value="' .$row["HotelId"] . '">' .$row["Hotel_Name"]. '</option>';
+                                        }
+                                    }
+                                    $sql = "SELECT * FROM hotel_master WHERE hotelid!='$hotelSelectedId' ORDER BY HotelId";
+                                    $result = mysqli_query($conn, $sql);
+                                    $numRows = mysqli_num_rows($result);
+                                    if($numRows) {
+                                        while($row=mysqli_fetch_assoc($result)) {
+                                            echo '<option value="' . $row["HotelId"] .'">' .$row["Hotel_Name"] . '</option>'; 
+                                        }
+                                    }
+                                }
                                 echo '</select>';
                             }
                             else {
@@ -217,7 +241,7 @@
                                 }
                             }
                         ?>
-                        </form>
+                      </form>
                         <script>
                             var dropdown = document.getElementById("hotelname");
                             var myForm = document.getElementById("myForm");
@@ -228,11 +252,14 @@
                             });
                         </script>
                       <hr />
+                      <div class="mb-3 mt-3">
+                        <label for="formFile" class="form-label">Upload Room Image</label>
+                        <input class="form-control" type="file" id="image" name="image">
+                      </div>
                       <label for="exampleInputPassword1" class="form-label">Room Type</label>
                       <select class="form-select mb-2" id="roomtype" name="roomtype" aria-label="Default select example">
                           <?php
                             if(!$isUpdate) {
-
                                 echo '<option selected>Choose from Room Types</option>';
                                 if(isset($_SESSION["hotelid"])) {
                                     $sql = "SELECT * FROM room_master WHERE RoomId NOT IN (
@@ -284,6 +311,7 @@
                             }
                         ?>
                       </select>
+                      
                       <label for="exampleInputPassword1" class="form-label mt-1">No of Rooms Available</label>
                       <?php
                         if(!$isUpdate) {
@@ -359,52 +387,52 @@
                     // $sql = "SELECT  * from student_address INNER JOIN student_marks on student_address.sid=student_marks.sid"; 
                     if(isset($_SESSION["hotelid"])) {
                         $hotelid = $_SESSION["hotelid"];
-                    }
-                    $sql = "SELECT * FROM room_master AS RM, hotel_master AS HM, hotel_room_alloted AS HRA WHERE RM.RoomId = HRA.RoomId AND HM.HotelId = HRA.HotelId AND HM.HotelId='$hotelid'";
-                    // echo $sql;
-                    $result = mysqli_query($conn, $sql);
-                    $num = mysqli_num_rows($result);
-                    // echo "Result: <br/>" . var_dump($num); 
-                    if($num) {
-                        // echo "Hello bro";
-                        echo '<hr />
-                        <h4>Rooms Alloted to Hotels</h4>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">S.No.</th>
-                                    <th scope="col">Room Type</th>
-                                    <th scope="col">No of Rooms </th>
-                                    <th scope="col">No of Guests</th>
-                                    <th scope="col">Rate per Night</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                        <tbody>';
-                        $i=1;
-                        while($row = mysqli_fetch_assoc($result)) {
-                            echo '<tr>
-                            <th scope="row">' .$i . '</th>
-                            <td>' .$row["Room_Type"] .'</td>
-                            <td>' .$row["No_Of_Rooms"] .'</td>
-                            <td>' .$row["No_Of_Guests"] .'</td>
-                            <td>' .$row["RatePerNight"] .'</td>';
-                            echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
-                                <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
-                                <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form2_update">Update</button></td>
-                            </form>';
-                            echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
-                                <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
-                                <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form3_delete">Delete</button></td>
-                            </form>
-                            </tr>';
-                            $i++;
+                        $sql = "SELECT * FROM room_master AS RM, hotel_master AS HM, hotel_room_alloted AS HRA WHERE RM.RoomId = HRA.RoomId AND HM.HotelId = HRA.HotelId AND HM.HotelId='$hotelid'";
+                        $result = mysqli_query($conn, $sql);
+                        $num = mysqli_num_rows($result);
+                        // echo "Result: <br/>" . var_dump($num); 
+                        if($num) {
+                            // echo "Hello bro";
+                            echo '<hr />
+                            <h4>Rooms Alloted to Hotels</h4>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">S.No.</th>
+                                        <th scope="col">Room Type</th>
+                                        <th scope="col">No of Rooms </th>
+                                        <th scope="col">No of Guests</th>
+                                        <th scope="col">Rate per Night</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                            <tbody>';
+                            $i=1;
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo '<tr>
+                                <th scope="row">' .$i . '</th>
+                                <td>' .$row["Room_Type"] .'</td>
+                                <td>' .$row["No_Of_Rooms"] .'</td>
+                                <td>' .$row["No_Of_Guests"] .'</td>
+                                <td>' .$row["RatePerNight"] .'</td>';
+                                echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
+                                    <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
+                                    <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form2_update">Update</button></td>
+                                </form>';
+                                echo '<form action="/HotelBookingSystem/admin/room_allot_test.php" method="POST">
+                                    <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
+                                    <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form3_delete">Delete</button></td>
+                                </form>
+                                </tr>';
+                                $i++;
+                            }
+                            
+                            echo '</tbody>
+                          </table>';
                         }
-                        
-                        echo '</tbody>
-                      </table>';
                     }
+                    // echo $sql;
                 ?>
               </div>
             </div>

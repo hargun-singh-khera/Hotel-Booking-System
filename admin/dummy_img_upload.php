@@ -26,11 +26,13 @@
   </head>
   <body>
     <form action="dummy_img_upload.php" method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="formFile" class="form-label">Default file input example</label>
-            <input class="form-control" type="file" id="image" name="image">
-            <button class="btn btn-primary" id="submit" name="submit">Submit</button>
-        </div>
+        <form action="dummy_img_upload.php" method="POST">
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Default file input example</label>
+                <input class="form-control" type="file" id="image" name="image">
+                <button class="btn btn-primary" id="submit" name="submit">Submit</button>
+            </div>
+        </form>
     </form>
     <div>
         <?php

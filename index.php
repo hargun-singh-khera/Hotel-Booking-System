@@ -1,11 +1,38 @@
 <?php 
     session_start();
+
     include 'partials/dbconnect.php';
+    
+    $isSearch = false;
     if((!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true)) {
         header('location: login.php');
         exit;
     }
     // header('Refresh: 5; login.php');
+
+    if($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST["booknow"])) {
+            $id = $_POST["hotelid"];
+            // echo "Hello Book Now" .$id;
+            $_SESSION["hotelid"] = $id;
+            header('Location: hotel.php');
+        }
+        if(isset($_POST["search"])) {
+            // echo "Searching...";
+            $isSearch = true;
+            $id = $_POST["locations"];
+            $checkin = $_POST["checkin"];
+            $checkout = $_POST["checkout"];
+            $guests = $_POST["guests"];
+            $rooms = $_POST["rooms"];
+            $_SESSION["CheckInDate"] = $checkin;
+            $_SESSION["CheckOutDate"] = $checkout;
+            $_SESSION["Guests"] = $guests;
+            $_SESSION["Rooms"] = $rooms;
+            echo "Location Id: " .$id . ", Check in: " .$_SESSION["CheckInDate"] .", Check out: " .$checkout . ', Guest: ' .$guests .", Rooms: " .$rooms;
+            
+        }
+    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -21,115 +48,216 @@
 
     <!-- caraousel -->
     <?php include 'carousel.php';?>
-    <div class="d-flex align-items-center justify-content-center " style="margin-top:-60px;">
-        <div class="card shadow-lg p-3 mb-5 rounded border-0 mb-3 w-75 " >
-          <div class="row g-0">
-            <div class="col">
-              <div class=" d-flex card-body">
-                <span class="leading-none inline-flex items-center justify-center h-full w-full transform mt-4 me-2" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="pointer-events-none max-h-full max-w-full"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"><path d="M10 3a7 7 0 107 7 7 7 0 00-7-7zM21 21l-6-6" vector-effect="non-scaling-stroke"></path></g></svg></span>
-                <div class="ms-2">
-                  <label for="location">Location</label>  
-                  <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Where to?">
+    <form action="/HotelBookingSystem/index.php" method="POST">
+        <div class="d-flex align-items-center justify-content-center" style="margin-top:-60px;">
+            <div class="card shadow-lg p-3 mb-5 rounded border-0 mb-3 w-80 " >
+                <div class="row g-0">
+                    <div class="col">
+                        <div class="d-flex card-body">
+                            <span class="leading-none inline-flex items-center justify-center h-full w-full transform mt-4 me-2" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="pointer-events-none max-h-full max-w-full"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2"><path d="M10 3a7 7 0 107 7 7 7 0 00-7-7zM21 21l-6-6" vector-effect="non-scaling-stroke"></path></g></svg></span>
+                            <div class="ms-2">
+                                <label for="location">Location</label>  
+                                <select class="form-select" aria-label="Default select example" name="locations" id="locations">
+                                    <?php
+                                        $sql = "SELECT * FROM location_master";
+                                        $result = mysqli_query($conn, $sql);
+                                        $num = mysqli_num_rows($result);
+                                        echo '<option selected>Where to?</option>';
+                                        if($num) {
+                                            while($row = mysqli_fetch_assoc($result)) {
+                                                echo '<option value="' .$row["LocationId"] .'">' .$row["Location"]. '</option>';
+
+                                            }
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="d-flex ms-3 me-3 h-auto">
+                                <div class="vr"></div>
+                            </div>
+                            <div class="">
+                                <label for="check_in">Check In</label>  
+                                <input type="date" class="form-control" name="checkin" id="checkin" aria-describedby="emailHelp">
+                            </div>
+                            <div class="d-flex ms-3 me-3 h-auto">
+                                <div class="vr"></div>
+                            </div>
+                            <div class="">
+                                <label for="check_out">Check Out</label>  
+                                <input type="date" class="form-control" name="checkout" id="checkout" aria-describedby="emailHelp">
+                            </div>
+                            <div class="d-flex ms-3 me-3 h-auto">
+                                <div class="vr"></div>
+                            </div>
+                            <div class="">
+                                <label for="guests">Guests</label>  
+                                <input type="number" class="form-control" name="guests" id="guests" aria-describedby="emailHelp" placeholder="No. of Guests">
+                            </div>
+                            <div class="d-flex ms-3 me-3 h-auto">
+                                <div class="vr"></div>
+                            </div>
+                            <div class="me-5">
+                                <label for="location">Rooms</label>  
+                                <input type="number" class="form-control" name="rooms" id="rooms" aria-describedby="emailHelp" placeholder="No. of Rooms">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3" name="search" id="search" style="background-color: #ff6537ff; border:none; max-height:50px;width:100px;">Search</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex ms-3 me-3 h-auto">
-                  <div class="vr"></div>
-                </div>
-                <div class="">
-                  <label for="check_in">Check In</label>  
-                  <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="d-flex ms-3 me-3 h-auto">
-                  <div class="vr"></div>
-                </div>
-                <div class="">
-                  <label for="check_out">Check Out</label>  
-                  <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                </div>
-                <div class="d-flex ms-3 me-3 h-auto">
-                  <div class="vr"></div>
-                </div>
-                <div class="">
-                  <label for="guests">Guests</label>  
-                  <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="No. of Guests">
-                </div>
-                <div class="d-flex ms-3 me-3 h-auto">
-                  <div class="vr"></div>
-                </div>
-                <div class="me-5">
-                  <label for="location">Rooms</label>  
-                  <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="No. of Rooms">
-                </div>
-                  
-                <button type="submit" class="btn btn-primary mt-3" style="background-color: #ff6537ff; border:none; max-height:50px;width:100px;">Search</button>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    <div class="container text-center">
+    </form>
+        <div class="container text-center">
         
         <p class="h1">The <span style="color: #ff6537ff;">Best Hotels</span> For You</p>
         <small class="text-body-secondary">There are some of the hotels that we highly recommend for you. We guarentee the quality of service, <br />the food, the hotel area and various other aspects.</small>
     
-        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
-            <?php
-                $sql = "SELECT * FROM hotel_room_alloted AS HRA
-                INNER JOIN location_master AS LM
-                ON HRA.LocationId = LM.LocationId
-                INNER JOIN hotel_master AS HM
-                ON HRA.HotelId = HM.HotelId";
-                $result = mysqli_query($conn, $sql);
-                $num = mysqli_num_rows($result);
-                if($num) {
-                    while($row = mysqli_fetch_assoc($result)) {
-                        echo '<div class="col-md-3" >
-                        <div class="card border-0 shadow mb-5 text-start" style="border-radius:10px;">
-                            <img src="images/' .$row["HotelImage"] .'" class="card-img-top" alt="..." style="border-top-left-radius:10px; border-top-right-radius:10px;">
-                            <div class="card-body">
-                                <h5 class="card-title">' .$row["Hotel_Name"] .'</h5>
-                                <div class="row ">
-                                    <div class="col ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
-                                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                            </svg><small class="text-body-secondary">
-                                            &nbsp;'.$row["Location"].'
-                                        </small>
-                                        <br/>
-                                        <div class="mt-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
-                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                            </svg>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
-                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                            </svg>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
-                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                            </svg>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
-                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                            </svg>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16" style="color:#FFC24A;">
-                                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
-                                            </svg>
-                                        </div>
         
-                                    </div>
-                                    <div class="col text-end m-auto">
-                                        <p class="m-auto" style="color:#ff6537ff;"><b>₹ 2446/-</b></p>
-                                        <small class="text-body-secondary m-auto">1 room per night</small>
-                                    </div>
-                                    <div class="w-100 mt-3 pb-3">
-                                        <button class="btn btn-primary w-100" style="background-color: #ff6537ff;border:none;">Book Now</button>
+            <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+                <?php
+                    if(!$isSearch) {
+                        $sql = "SELECT * FROM hotel_master AS HM
+                        INNER JOIN location_master AS LM
+                        ON HM.LocationId = LM.LocationId";
+                        $result = mysqli_query($conn, $sql);
+                        $num = mysqli_num_rows($result);
+                        if($num) {
+                            while($row = mysqli_fetch_assoc($result)) {
+                                // echo "<br/> Hotel Id: " .$row["HotelId"];
+                                $sql2 = "SELECT MIN(RatePerNight) AS Price FROM hotel_room_alloted WHERE HotelId='" .$row["HotelId"] ."'";
+                                $result2 = mysqli_query($conn, $sql2);
+                                $num2 = mysqli_num_rows($result2);
+                                $price = NULL;
+                                if($num2) {
+                                    while($row2 = mysqli_fetch_assoc($result2)) {
+                                        $price = $row2["Price"];
+                                    }
+                                }
+                                echo '<div class="col-md-3" >
+                                
+                                <div class="card border-0 shadow mb-5 text-start" style="border-radius:10px;">
+                                <img src="images/' .$row["HotelImage"] .'" class="card-img-top" alt="..." style="border-top-left-radius:10px; border-top-right-radius:10px;">
+                                <div class="card-body">
+                                        <h5 class="card-title">' .$row["Hotel_Name"] .'</h5>
+                                        <div class="row ">
+                                            <div class="col ">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                                                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                    </svg><small class="text-body-secondary">
+                                                    &nbsp;'.$row["Location"].'
+                                                </small>
+                                                <br/>
+                                                <div class="mt-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                        <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                                                        </svg>
+                                                        </div>
+                
+                                                        </div>
+                                            <div class="col text-end m-auto">
+                                            <h5 class="mb-1" style="color:#ff6537ff;"><b>₹ ' .$price. '</b></h5>
+                                            <small class="text-body-secondary m-auto"><strong>1 room</strong> per night</small>
+                                            </div>
+                                            <div class="w-100 mt-3 pb-3">
+                                                <form action="/HotelBookingSystem/index.php" method="POST">
+                                                    <input type="hidden" name="hotelid" id="hotelid" value="' .$row["HotelId"] .'" />
+                                                    <button class="btn btn-primary w-100" name="booknow" id="booknow" style="background-color: #ff6537ff;border:none;">Book Now</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>';
+                            </div>';
+                            }
+                        }
                     }
-                }
-            ?>
-        </div>
+                    else {
+                        $sql = "SELECT * FROM hotel_master AS HM
+                        INNER JOIN location_master AS LM
+                        ON HM.LocationId = LM.LocationId
+                        WHERE HM.LocationId='$id'";
+                        // echo "<br/>" .$sql;
+                        $result = mysqli_query($conn, $sql);
+                        $num = mysqli_num_rows($result);
+                        if($num) {
+                            while($row = mysqli_fetch_assoc($result)) {
+                                // echo "<br/> Location Id: " .$id;
+                                $sql2 = "SELECT MIN(RatePerNight) AS Price FROM hotel_room_alloted WHERE HotelId='" .$row["HotelId"] ."'";
+                                $result2 = mysqli_query($conn, $sql2);
+                                $num2 = mysqli_num_rows($result2);
+                                $price = NULL;
+                                if($num2) {
+                                    while($row2 = mysqli_fetch_assoc($result2)) {
+                                        $price = $row2["Price"];
+                                    }
+                                }
+                                echo '<div class="col-md-3" >
+                                
+                                    <div class="card border-0 shadow mb-5 text-start" style="border-radius:10px;">
+                                    <img src="images/' .$row["HotelImage"] .'" class="card-img-top" alt="..." style="border-top-left-radius:10px; border-top-right-radius:10px;">
+                                    <div class="card-body">
+                                            <h5 class="card-title">' .$row["Hotel_Name"] .'</h5>
+                                            <div class="row ">
+                                                <div class="col ">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                                                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                        </svg><small class="text-body-secondary">
+                                                        &nbsp;'.$row["Location"].'
+                                                    </small>
+                                                    <br/>
+                                                    <div class="mt-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                            </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16" style="color:#FFC24A;">
+                                                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                                                            </svg>
+                                                            </div>
+                    
+                                                            </div>
+                                                <div class="col text-end m-auto">
+                                                <p class="m-auto" style="color:#ff6537ff;"><b>₹ ' .$price. '/-</b></p>
+                                                <small class="text-body-secondary m-auto">1 room per night</small>
+                                                </div>
+                                                <div class="w-100 mt-3 pb-3">
+                                                    <form action="/HotelBookingSystem/index.php" method="POST">
+                                                        <input type="hidden" name="hotelid" id="hotelid" value="' .$row["HotelId"] .'" />
+                                                        <button class="btn btn-primary w-100" name="booknow" id="booknow" style="background-color: #ff6537ff;border:none;">Book Now</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';
+                            }
+                        }
+                    }
+                ?>
+            </div>
+        </form>
     </div>
 
     <div class="container mt-5">
@@ -308,7 +436,7 @@
     </section>
     <hr />
     
-    <?php 
+    <!-- <?php 
        
         $isSuccess = false;
         if($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -329,7 +457,7 @@
                 die("Error!" . mysqli_connect_error());
             }
         }
-    ?>
+    ?> -->
 
     <!-- contact us section -->
     <section id="contact">

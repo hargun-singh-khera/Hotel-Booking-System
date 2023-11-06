@@ -4,12 +4,14 @@
     include 'partials/dbconnect.php';
     
     $isSearch = false;
+    $isSuccess = false;
+    $showWarning = false;
+    $show = false;
     if((!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true)) {
         header('location: login.php');
         exit;
     }
     // header('Refresh: 5; login.php');
-
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["booknow"])) {
             $id = $_POST["hotelid"];
@@ -32,8 +34,40 @@
             // echo "Location Id: " .$id . ", Check in: " .$_SESSION["CheckInDate"] .", Check out: " .$checkout . ', Guest: ' .$guests .", Rooms: " .$rooms;
             
         }
-
         
+        if(isset($_POST["submit"])) {
+            $show = true;
+            $name = $_POST["name"];
+            $email = $_POST["email"];
+            $pnumber = $_POST["pnumber"];
+            $concern = $_POST["concern"];
+            if($name && $email && $pnumber && $concern) {
+                if(strlen($pnumber) == 10) {
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        // $isEmpty = false;
+                        $sql = "INSERT INTO `contacts` (`name`, `email`, `phonenumber`, `concern`) VALUES ('$name', '$email', '$pnumber', '$concern')";
+                        $result = mysqli_query($conn, $sql);
+                        if($result) {
+                            $isSuccess = true;
+                        }
+                        else {
+                            $isSuccess = false;
+                            die("Error!" . mysqli_connect_error());
+                        }
+                    }
+                    else {
+                        $showWarning = "Please provide a valid email address.";
+                    }
+                }
+                else {
+                    $showWarning = "Mobile Number must be equal to 10 characters.";
+                }
+            }
+            else {
+                $showWarning = "All fields are mandatory.";
+            }
+            
+        }
     }
 ?>
 <!doctype html>
@@ -439,24 +473,28 @@
     <hr />
     
     <?php 
-       
-        $isSuccess = false;
-        if($_SERVER['REQUEST_METHOD'] == "POST") {
-            include 'partials/dbconnect.php';
-            $name = $_POST["name"];
-            $email = $_POST["email"];
-            $pnumber = $_POST["pnumber"];
-            $concern = $_POST["concern"];
-            
-            $isEmpty = false;
-            $sql = "INSERT INTO `contacts` (`name`, `email`, `phonenumber`, `concern`) VALUES ('$name', '$email', '$pnumber', '$concern')";
-            $result = mysqli_query($conn, $sql);
-            if($result) {
-                $isSuccess = true;
-            }
-            else {
-                $isSuccess = false;
-                die("Error!" . mysqli_connect_error());
+        
+        if($isSuccess) {
+            echo 
+                '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> Your form has been submitted successfully.</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+        }
+        if($showWarning) {
+            echo 
+                '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Warning!</strong> ' .$showWarning .'</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+        }
+        else {
+            if($show && !$isSuccess) {
+                echo 
+                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> We are facing some technical issues and your form was not submitted successfully. We regret for the inconvinience caused to you.</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             }
         }
     ?>
@@ -489,43 +527,11 @@
                     </div>
                     <div class="row-md-3 mt-5">
                         <!-- Button trigger modal -->
-                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#exampleModal" id="submit" name="submit" style="background-color:#ff6537ff; border:none;">Submit</button>
+                        <button class="btn btn-primary w-100"  id="submit" name="submit" style="background-color:#ff6537ff; border:none;">Submit</button>
                     </div>  
                 </form>
             </div>
             
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Message</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <?php 
-                            // echo 'isSuccess: ' .$isSuccess;
-                            if($isSuccess) {
-                                echo 
-                                    '<div class="alert alert-success fade show" role="alert">
-                                        <strong>Success!</strong> Your form has been submitted successfully.</button>
-                                    </div>';
-                            }
-                            else {
-                                echo 
-                                    '<div class="alert alert-danger fade show" role="alert">
-                                        <strong>Error!</strong> We are facing some technical issues and your form was not submitted successfully. We regret for the inconvinience caused to you.</button>
-                                    </div>';
-                            }
-                        ?>
-                        
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" style="background-color: #ff6537ff; border:none;" data-bs-dismiss="modal">Ok</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 

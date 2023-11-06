@@ -1,11 +1,11 @@
 <?php
     session_start();
     if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
-        echo  "Redirecting";
+        // echo  "Redirecting";
         header('Location: login.php');
         exit;
     }
-    
+
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
     $showUpdateSuccess = false;

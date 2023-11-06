@@ -1,6 +1,8 @@
 <?php 
     $login = false;
     $showError = false;
+    session_start();
+    
     if($_SERVER['REQUEST_METHOD'] == "POST") {
         include 'partials/dbconnect.php';
         $email = $_POST["email"];

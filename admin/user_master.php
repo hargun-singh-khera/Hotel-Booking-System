@@ -2,7 +2,7 @@
     session_start();
 
     if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
-        echo  "Redirecting";
+        // echo  "Redirecting";
         header('Location: login.php');
         exit;
     }

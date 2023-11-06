@@ -4,7 +4,7 @@
     
     session_start();
     if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
-        echo  "Redirecting";
+        // echo  "Redirecting";
         header('Location: login.php');
         exit;
     }
@@ -89,7 +89,7 @@
         if(isset($_POST["form3_delete"])) {
             // echo "Hello form 2";
             $id = $_POST["id"];
-            $sql = "DELETE FROM hotel_room_alloted WHERE roomid='$id'";
+            $sql = "DELETE FROM hotel_room_alloted WHERE roomid='$id' AND hotelid='" . $_SESSION["hotelid"] ."'";
             $deleteResult  = mysqli_query($conn, $sql);
             if(!$deleteResult) {
                 $showDeleteSuccess = false;

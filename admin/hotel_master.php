@@ -2,7 +2,7 @@
     session_start();
 
     if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
-        echo  "Redirecting";
+        // echo  "Redirecting";
         header('Location: login.php');
         exit;
     }
@@ -14,6 +14,7 @@
     $showDeleteAlert = false;
     $showUpdateAlert = false;
     $isUpdate = false;
+
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["form1_submit"])) {
             $hotelname = $_POST["hotelname"];
@@ -31,13 +32,6 @@
             else {
                 $showSubmitSuccess = true;
             }
-
-            // if(move_uploaded_file($tmp_name, $folder)) {
-            //     echo "<h2> File uploaded successfully</h2>";
-            // }
-            // else {
-            //     echo "<h2> File was not uploaded successfully</h2>";
-            // }
 
             $showSubmitAlert = true;
         }

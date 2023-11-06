@@ -1,5 +1,11 @@
 <?php
     session_start();
+    if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
+        echo  "Redirecting";
+        header('Location: login.php');
+        exit;
+    }
+
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
     $showUpdateSuccess = false;
@@ -99,8 +105,8 @@
                     else if($showDeleteAlert && !$showDeleteSuccess) {
                         echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong>Error!</strong> Record was not deleted.
-                                <ul><li>Possible resason: You may have alloted this room type to a hotel.</li> 
-                                <li>Fix: Please de-allocate this room type from all hotels before proceeding.</li></ul>
+                                <ul><li>Possible resason: You may have alloted this location to a hotel.</li> 
+                                <li>Fix: Please de-allocate this location from all hotels before proceeding.</li></ul>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>'; 
                     }

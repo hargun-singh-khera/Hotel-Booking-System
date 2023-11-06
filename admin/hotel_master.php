@@ -1,6 +1,11 @@
 <?php
     session_start();
 
+    if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
+        echo  "Redirecting";
+        header('Location: login.php');
+        exit;
+    }
     include '../partials/dbconnect.php';
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
@@ -113,7 +118,7 @@
                 }
                 else if($showUpdateAlert && $showUpdateSuccess) {
                     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Success!</strong> Hotel name updated successfully.
+                            <strong>Success!</strong> Hotel name or its location has been updated successfully.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>'; 
                 }
@@ -159,14 +164,41 @@
                                     <label for="exampleInputPassword1" class="form-label">Hotel Location</label>
                                     <select class="form-select" aria-label="Default select example" id="location" name="location">
                                         <?php
+                                            echo '<option selected>Choose from Locations</option>';
                                             if(!$isUpdate) {
                                                 $sql = "SELECT * FROM location_master";
                                                 $result = mysqli_query($conn, $sql);
                                                 $num = mysqli_num_rows($result);
-                                                echo '<option selected>Choose from Locations</option>';
                                                 if($num) {
                                                     while($row = mysqli_fetch_assoc($result)) {
                                                         echo '<option value="' .$row["LocationId"] .'">' .$row["Location"] .'</option>';
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                if($_SESSION["hotelid"]) {
+                                                    $id = $_SESSION["hotelid"];
+                                                    $sql = "SELECT * FROM hotel_master AS HM
+                                                    INNER JOIN location_master AS LM
+                                                    ON HM.LocationId = LM.LocationId
+                                                    WHERE HM.HotelId='$id'";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    $num = mysqli_num_rows($result);
+                                                    if($num) {
+                                                        while($row = mysqli_fetch_assoc($result)) {
+                                                            echo '<option selected>'.$row["Location"].'</option>';
+                                                        }
+                                                    }
+                                                    $sql = "SELECT * FROM hotel_master AS HM
+                                                    INNER JOIN location_master AS LM
+                                                    ON HM.LocationId = LM.LocationId
+                                                    WHERE HM.HotelId!='$id'";
+                                                    $result = mysqli_query($conn, $sql);
+                                                    $num = mysqli_num_rows($result);
+                                                    if($num) {
+                                                        while($row = mysqli_fetch_assoc($result)) {
+                                                            echo '<option value="' .$row["LocationId"] .'">'.$row["Location"].'</option>';
+                                                        }
                                                     }
                                                 }
                                             }

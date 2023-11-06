@@ -32,6 +32,8 @@
             // echo "Location Id: " .$id . ", Check in: " .$_SESSION["CheckInDate"] .", Check out: " .$checkout . ', Guest: ' .$guests .", Rooms: " .$rooms;
             
         }
+
+        
     }
 ?>
 <!doctype html>
@@ -289,7 +291,7 @@
     <hr />
     
     
-    <div class="container text-center mt-5 mb-5">
+    <!-- <div class="container text-center mt-5 mb-5">
         <p class="h1 mb-3">What Our <span style="color: #ff6537ff;">Customer </span>Says!</p>
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
             <div class="col-md-3">
@@ -330,7 +332,7 @@
             </div>
         </div>
     </div>
-    <hr/>
+    <hr/> -->
     <section id="faqs">
         <div class="container">
             <div class="container col-xxl-10 ">
@@ -436,7 +438,7 @@
     </section>
     <hr />
     
-    <!-- <?php 
+    <?php 
        
         $isSuccess = false;
         if($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -457,7 +459,7 @@
                 die("Error!" . mysqli_connect_error());
             }
         }
-    ?> -->
+    ?>
 
     <!-- contact us section -->
     <section id="contact">
@@ -482,12 +484,12 @@
                         <label for="pnumber">Enter your Phone Number</label>
                     </div>
                     <div class="form-floating">
-                    <textarea class="form-control" placeholder="Elaborate your Concern here" name="concern" id="floatingTextarea2" required="" style="height: 100px;"></textarea>
+                    <textarea class="form-control" placeholder="Elaborate your Concern here" name="concern" id="floatingTextarea2" style="height: 100px;" required ></textarea>
                     <label for="concern">Elaborate your Concern</label>
                     </div>
                     <div class="row-md-3 mt-5">
                         <!-- Button trigger modal -->
-                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#exampleModal" id="submitContactForm" style="background-color:#ff6537ff; border:none;">Submit</button>
+                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#exampleModal" id="submit" name="submit" style="background-color:#ff6537ff; border:none;">Submit</button>
                     </div>  
                 </form>
             </div>
@@ -503,6 +505,7 @@
                     </div>
                     <div class="modal-body">
                         <?php 
+                            // echo 'isSuccess: ' .$isSuccess;
                             if($isSuccess) {
                                 echo 
                                     '<div class="alert alert-success fade show" role="alert">

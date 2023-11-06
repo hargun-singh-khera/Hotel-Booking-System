@@ -1,6 +1,11 @@
 <?php
     session_start();
 
+    if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
+        echo  "Redirecting";
+        header('Location: login.php');
+        exit;
+    }
     include '../partials/dbconnect.php';
     $showDeleteSuccess = false;
     $showDeleteAlert = false;

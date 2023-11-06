@@ -11,7 +11,7 @@
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3">
             <div class="col-md-3 mb-2 mb-md-0">
                 <a href="index.php" class="d-inline-flex link-body-emphasis text-decoration-none">
-                <img src="images/logo.png" alt="img" width="40" height="40"/> <h4 class="mt-2">Heritage</h4>
+                <img class="ms-3" src="images/logo.png" alt="img" width="40" height="40"/> <h4 class="mt-2 ms-2">Heritage</h4>
                 </a>
             </div>
             <ul class="nav nav-pills nav-fill gap-2 p-1 large  rounded-5 shadow-sm" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: #ff6537ff; --bs-nav-pills-link-active-bg: var(--bs-white); background-color:#ff6537ff;">

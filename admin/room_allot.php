@@ -3,6 +3,12 @@
 
     
     session_start();
+    if(!isset($_SESSION['adminloggedin']) || $_SESSION['adminloggedin']!=true) {
+        echo  "Redirecting";
+        header('Location: login.php');
+        exit;
+    }
+
     $showSubmitSuccess = false;
     $showDeleteSuccess = false;
     $showUpdateSuccess = false;
@@ -21,7 +27,9 @@
     // $_SESSION['hotelid'] = $hotelSelectedId;
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["hotelname"])) {
-            $hotelSelectedId = $_POST["hotelname"];  
+            $hotelSelectedId = $_POST["hotelname"];
+            $_SESSION["hotelid"] = $hotelSelectedId;
+            // echo "Hotel id: " . $_SESSION["hotelid"] ."<br/>";  
             $_SESSION['hotelid'] = $hotelSelectedId;
         }
         if(isset($_POST["form1_submit"])) {
@@ -73,9 +81,9 @@
             // echo "Hotel Name: " . $hotelname . ", Room Type: " . $roomtype . ", No of rooms: " .$noofrooms;
         }
         if(isset($_POST["form2_update"])) {
-            // echo 'Hello update' .$_SESSION["hotelid"];
             $id = $_POST["id"];
             $_SESSION["id"] = $id;
+            // echo 'Hello update' .$_SESSION["id"];
             $isUpdate = true;
         }
         if(isset($_POST["form3_delete"])) {
@@ -273,7 +281,7 @@
                                     $sql = "SELECT * FROM room_master AS RM
                                     INNER JOIN hotel_room_alloted AS HRM
                                     ON RM.RoomId=HRM.RoomId
-                                    WHERE HRM.RoomId='$id'";
+                                    WHERE HRM.RoomId='$id' AND HRM.hotelid='".$_SESSION["hotelid"]."'";
                                     $result = mysqli_query($conn, $sql);
                                     $num = mysqli_num_rows($result);
                                     if($num) {
@@ -309,12 +317,15 @@
                       <label for="exampleInputPassword1" class="form-label mt-1">No of Rooms Available</label>
                       <?php
                         if(!$isUpdate) {
+                            // echo "Hello world !isupdate<br/>";
                             echo '<input type="number" class="form-control mb-2" id="noofrooms" name="noofrooms" value="1" min="0" aria-describedby="emailHelp">';
                         }
                         else {
+                            // echo "isupdate<br/>";
                             if(isset($_SESSION["id"])) {
                                 $id = $_SESSION["id"];
-                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id'";
+                                // echo "Session set id: " .$id . " and hotel selected id: " .$_SESSION["hotelid"]. "<br/>";
+                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id' AND hotelid='" . $_SESSION["hotelid"] ."'";
                                 $result = mysqli_query($conn, $sql);
                                 $num = mysqli_num_rows($result);
                                 if($num) {
@@ -333,7 +344,7 @@
                         else {
                             if(isset($_SESSION["id"])) {
                                 $id = $_SESSION["id"];
-                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id'";
+                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id' AND hotelid='" . $_SESSION["hotelid"] . "'";
                                 $result = mysqli_query($conn, $sql);
                                 $num = mysqli_num_rows($result);
                                 if($num) {
@@ -352,7 +363,7 @@
                         else {
                             if(isset($_SESSION["id"])) {
                                 $id = $_SESSION["id"];
-                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id'";
+                                $sql = "SELECT * FROM hotel_room_alloted WHERE roomid='$id' AND hotelid='" . $_SESSION["hotelid"] ."'";
                                 $result = mysqli_query($conn, $sql);
                                 $num = mysqli_num_rows($result);
                                 if($num) {

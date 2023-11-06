@@ -15,7 +15,8 @@
                 $sql = "SELECT * FROM users_master AS UM
                 INNER JOIN user_type_master AS UTM
                 ON UM.UserTypeId = UTM.UserTypeId
-                WHERE UTM.User_Type='admin' AND UM.UserName='$name'";
+                WHERE UTM.User_Type='admin' AND BINARY UM.UserName='$name'";
+                // echo $sql;
                 $result = mysqli_query($conn, $sql);
                 $num = mysqli_num_rows($result);
                 if($num == 1) {
@@ -27,6 +28,7 @@
                             $_SESSION['adminloggedin'] = true;
                             $_SESSION['loggedin'] = true;
                             $_SESSION['name'] = $row["UserName"];
+                            $_SESSION['userid'] =$row["UserId"];
                             
                             // $_SESSION['usertypeid'] = 1;
                             
@@ -85,7 +87,7 @@
                 <div class="col my-auto">
                 <div class="card shadow-lg mb-5 p-4 border-0 rounded">
                     <div class="card-body">
-                        <img src="https://i.ibb.co/3hMcwNz/myhosieryshop-logo.png" class="img-fluid  mx-auto d-block" alt="image" width="200" />
+                        <img src="../images/logo.png" class="img-fluid  mx-auto d-block" alt="image" width="80" />
                         <div class="card-body">
                         <h5 style="font-size:30px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mt-2">Admin Login</h5>
                         <small class="text-body-secondary" >Log in with your admin credentials.</small>

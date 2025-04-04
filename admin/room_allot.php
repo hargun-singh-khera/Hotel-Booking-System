@@ -421,11 +421,11 @@
                                 <td>' .$row["No_Of_Rooms"] .'</td>
                                 <td>' .$row["No_Of_Guests"] .'</td>
                                 <td>' .$row["RatePerNight"] .'</td>';
-                                echo '<form action="/HotelBookingSystem/admin/room_allot.php" method="POST">
+                                echo '<form action="../admin/room_allot.php" method="POST">
                                     <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
                                     <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form2_update">Update</button></td>
                                 </form>';
-                                echo '<form action="/HotelBookingSystem/admin/room_allot.php" method="POST">
+                                echo '<form action="../admin/room_allot.php" method="POST">
                                     <input type="hidden" name="id" value="' . $row["RoomId"] .'" />
                                     <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form3_delete">Delete</button></td>
                                 </form>

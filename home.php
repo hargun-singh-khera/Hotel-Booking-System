@@ -1,16 +1,10 @@
 <?php 
-    
-    $title = "Heritage | Home";
-    include "includes/partials/header.php";
-    
+
     $isSearch = false;
     $isSuccess = false;
     $showWarning = false;
     $show = false;
-    if((!isset($_SESSION['loggedin']) || $_SESSION['loggedin']!=true)) {
-        header('location: login.php');
-        exit;
-    }
+    
     // header('Refresh: 5; login.php');
     if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(isset($_POST["booknow"])) {
@@ -71,24 +65,20 @@
     }
 ?>
 
-<main>
-    <?php 
-        include 'includes/sections/home/carousel.php';
-        include "includes/sections/home/search_box.php";
-        include "includes/sections/home/hotel_listing.php";
-    ?>
+<?php include 'includes/carousel.php';?>
+<?php include 'includes/search_box.php';?>
 
-    <hr />
-    <?php include "includes/sections/home/facilities.php"; ?>
-    <hr />  
-    <?php include "includes/sections/home/testimonials.php"; ?>
-    <hr>
-    <?php include "includes/sections/home/faqs.php"; ?>
-    <hr/>
+<?php include 'includes/hotel_listing.php';?>
 
-    <?php include "includes/sections/home/about.php"; ?>
-    <?php 
-        include "includes/sections/home/contact.php";
-        include "includes/partials/footer.php";
-    ?>
-</main>
+<hr />
+<?php include "includes/sections/facilities.php"; ?>
+<hr />
+<?php include "includes/sections/testimonials.php"; ?>
+<hr/>
+<?php include "includes/sections/faqs.php"; ?>
+<hr/>
+<?php include "includes/sections/about.php"; ?>
+<hr />
+
+<?php include "includes/sections/contact.php"; ?>
+

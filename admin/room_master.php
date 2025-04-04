@@ -137,7 +137,7 @@
                 <div class="col-md-8 ">
                     <div class="card shadow p-5 border-0 rounded me-5">
                         <h2 >Manage Rooms</h2>
-                        <form action="/HotelBookingSystem/admin/room_master.php" method="POST">
+                        <form action="../admin/room_master.php" method="POST">
                             <div class="mb-3">
                                 <label for="exampleInputPassword1" class="form-label">Room Type</label>
                                 <?php
@@ -192,11 +192,11 @@
                                     echo '<tr>
                                     <th scope="row">' .$i . '</th>
                                     <td>' .$row["Room_Type"] . '</td>';
-                                    echo '<form action="/HotelBookingSystem/admin/room_master.php" method="POST">
+                                    echo '<form action="../admin/room_master.php" method="POST">
                                             <input type="hidden" name="id" value="' . $roomId .'" />
                                             <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-warning w-100" name="form3_update">Update</button></td>
                                         </form>';
-                                    echo '<form action="/HotelBookingSystem/admin/room_master.php" method="POST">
+                                    echo '<form action="../admin/room_master.php" method="POST">
                                             <input type="hidden" name="id" value="' . $roomId .'" />
                                             <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form2_delete">Delete</button></td>
                                         </form>

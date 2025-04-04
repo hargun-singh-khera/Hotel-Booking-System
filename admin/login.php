@@ -92,7 +92,7 @@
                         <h5 style="font-size:30px; font-family:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif'" class="card-title mt-2">Admin Login</h5>
                         <small class="text-body-secondary" >Log in with your admin credentials.</small>
         
-                        <form class="w-auto m-auto mt-3" action="/HotelBookingSystem/admin/login.php" method="POST">
+                        <form class="w-auto m-auto mt-3" action="../admin/login.php" method="POST">
                             <div class="mb-1">
                                 <label for="exampleInputEmail1" class="form-label">Name or Username</label>
                                 <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp" />

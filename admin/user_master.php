@@ -82,7 +82,7 @@
                                             <th scope="row">' .$i . '</th>
                                             <td>' .$row["UserName"] . '</td>
                                             <td>' .$row["Email"] . '</td>';
-                                            echo '<form action="/HotelBookingSystem/admin/user_master.php" method="POST">
+                                            echo '<form action="../admin/user_master.php" method="POST">
                                                     <input type="hidden" name="id" value="' . $userId .'" />
                                                     <td><button type="submit" class="btn btn-sm rounded-pill px-3 btn-danger w-100" name="form_delete">Delete</button></td>
                                                 </form>

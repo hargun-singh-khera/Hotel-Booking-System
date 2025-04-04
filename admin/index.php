@@ -169,7 +169,7 @@
             <div class="col-md-4 ">
                 <div class="card shadow p-5 border-0 rounded me-5">
                     <h2 >Add Rooms</h2>
-                    <form action="/HotelBookingSystem/admin/index.php" method="POST">
+                    <form action="../admin/index.php" method="POST">
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Room Type</label>
                             <input type="text" class="form-control" id="roomtype" name="roomtype" required>
@@ -180,7 +180,7 @@
                     </form>
                     <hr />
                     <h2 >Delete Rooms</h2>
-                    <form action="/HotelBookingSystem/admin/index.php" method="POST">
+                    <form action="../admin/index.php" method="POST">
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Remove Room</label>
                             <select class="form-select" name="select_catalog" id="select_catalog" aria-label="Default select example">
@@ -207,7 +207,7 @@
             <div class="col-md-6">
                 <div class="card shadow p-5 border-0 rounded ms-5">
                     <h2>Add Hotels</h2>
-                    <form action="/HotelBookingSystem/admin/index.php" method="POST">
+                    <form action="../admin/index.php" method="POST">
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Hotel Name</label>
                             <input type="text" class="form-control" id="hotelname" name="hotelname" aria-describedby="emailHelp" required>
